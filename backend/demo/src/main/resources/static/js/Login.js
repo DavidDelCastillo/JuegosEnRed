@@ -57,7 +57,7 @@ class LoginScene extends Phaser.Scene {
 
 
         //Botón para ir al inicio
-        const logText = this.add.text(0.7 * centerX, 1.15 * centerY, 'Iniciar sesion', {
+        const logText = this.add.text(0.7 * centerX, 1.15 * centerY, 'Iniciar sesión', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
@@ -78,27 +78,37 @@ class LoginScene extends Phaser.Scene {
 
     }
 
-    // Función para iniciar sesión
-    login(user, password) {
-        fetch("http://localhost:8090/usuarios/login", {
+    IniciarSesion(user, password) {
+        if (!user || !password) {
+            alert("Por favor completa todos los campos.");
+            return;
+        }
+
+        fetch("http://localhost:8090/usuario/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user, 
-                password })
+                id: user,
+                password: password
+            })
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 alert("Inicio de sesión exitoso");
+                this.nombre.remove();
+                this.contra.remove();
                 this.scene.stop("LoginScene");
-                this.scene.start("IntroScene");  // Vamos a la escena de inicio de juego
+                this.scene.start("IntroScene");
                 this.sound.play("boton");
             } else {
                 alert("Error: " + data.message);
             }
         })
-        .catch(error => console.error("Error en el login:", error));
+        .catch(error => {
+            console.error("Error en el login:", error);
+            alert("Error al conectar con el servidor");
+        });
     }
 
     // Función para registrar usuario
