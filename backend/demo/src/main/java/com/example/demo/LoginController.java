@@ -57,21 +57,43 @@ public class LoginController{
         }
     }
 
-    //Carga de usuario
-    /*@PostMapping("/login")
+    // Carga de usuario
+    @PostMapping("/login")
     public ResponseEntity<?> loginUsuario(@RequestBody Usuario usuario) {
-        Optional<Usuario> usuarioEncontrado = userRepository.findByUser(usuario.getUser());
+        String nombreUsuario = usuario.getId();
+        String password = usuario.getPassword();
+        File archivoGeneral = new File("usuarios/usuarios.txt");
 
-        if (usuarioEncontrado.isPresent() && usuarioEncontrado.get().getPassword().equals(usuario.getPassword())) {
-            return ResponseEntity.ok().body(Map.of("success", true, "message", "Inicio con exito", "userId", usuarioEncontrado.get().getUserId()));
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("success", false, "message", "Credenciales incorrectas"));
+        if (!archivoGeneral.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "No hay usuarios registrados"));
         }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length >= 2 && partes[0].equals(nombreUsuario)) {
+                    if (partes[1].equals(password)) {
+                        return ResponseEntity.ok()
+                                .body(Map.of("success", true, "message", "Inicio de sesión exitoso"));
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Map.of("success", false, "message", "Contraseña incorrecta"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al leer usuarios"));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("success", false, "message", "Usuario no encontrado"));
     }
 
     //Obtener usuario por id
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
         Optional<Usuario> usuario = userRepository.findById(id);
         if (usuario.isPresent()) {
