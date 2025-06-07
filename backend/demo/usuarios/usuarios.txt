@@ -1,3 +1,4 @@
 aa,aa,0
 ab,aa,0
 opo,99,0
+kitsune,hola,0
