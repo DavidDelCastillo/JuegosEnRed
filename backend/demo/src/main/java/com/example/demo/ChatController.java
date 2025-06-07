@@ -53,7 +53,7 @@ public class ChatController {
         }
     }
 
-    @Autowired
+    /*@Autowired
     private UserRepository userRepository;
 
     @PostMapping("/connect")
@@ -65,7 +65,7 @@ public class ChatController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("success", false, "message", "Usuario no encontrado"));
         }
-    }
+    }*/
 
     @PostMapping("/disconnect")
     public int disconnectClient(@RequestParam int userId) {

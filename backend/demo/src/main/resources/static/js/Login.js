@@ -84,7 +84,7 @@ class LoginScene extends Phaser.Scene {
             return;
         }
 
-        fetch("http://localhost:8090/usuario/login", {
+        fetch("http://localhost:8080/usuario/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -117,7 +117,7 @@ class LoginScene extends Phaser.Scene {
             alert("Por favor completa todos los campos.");
             return;
         }
-        fetch("http://localhost:8090/usuario/registro", {
+        fetch("http://localhost:8080/usuario/registro", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: nombre, password: contra })
