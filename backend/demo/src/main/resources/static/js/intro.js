@@ -9,7 +9,7 @@ class IntroScene extends Phaser.Scene{
         // carga de audios
         this.load.audio("boton", 'assets/Clickar_Boton.wav');
         this.load.audio("musicaFondo", 'assets/musicMenu.mp3');
-        this.load.image("chat", 'assets/backbutton.png');
+        this.load.image("chat", 'assets/Boton_Chat.png');
 
         //carga de imágenes
         this.load.image("fondo", 'assets/menu.png');
@@ -55,7 +55,7 @@ class IntroScene extends Phaser.Scene{
         
 
         //boton del chat
-        const chatButton = this.add.image(1.9*centerX, 0.2*centerY, 'chat').setScale(0.3)
+        const chatButton = this.add.image(0.5*centerX, 0.2*centerY, 'chat').setScale(0.3)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();

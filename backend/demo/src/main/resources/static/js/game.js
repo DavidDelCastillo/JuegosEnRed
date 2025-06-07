@@ -327,7 +327,7 @@ export default class GameScene extends Phaser.Scene {
         });
 
         //Añadimos el botón de pausa
-        const pausa = this.add.image(1.43 * centerX, 0.55 * centerY, 'pause').setScrollFactor(0).setScale(0.09)
+        const pausa = this.add.image(1.5 * centerX, 0.55 * centerY, 'pause').setScrollFactor(0).setScale(0.09)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.pause(); // Pausa la escena actual
@@ -335,7 +335,7 @@ export default class GameScene extends Phaser.Scene {
             });
 
         //boton para abrir el chat
-        const chatButton = this.add.image(0.54*centerX, 1.5*centerY, 'chat').setScrollFactor(0).setScale(0.15)
+        const chatButton = this.add.image(0.5*centerX, 0.5*centerY, 'chat').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();
@@ -398,11 +398,11 @@ export default class GameScene extends Phaser.Scene {
         })
 
         //icono de los poderes
-        this.vision = this.add.image(0.56 * centerX, 1.4 * centerY, 'vision').setScrollFactor(0);
-        this.olfato = this.add.image(0.56 * centerX, 1.25 * centerY, 'olfato').setScrollFactor(0);
+        this.vision = this.add.image(0.5 * centerX, 0.4 * centerY, 'vision').setScrollFactor(0);
+        this.olfato = this.add.image(0.5 * centerX, 0.25 * centerY, 'olfato').setScrollFactor(0);
 
-        this.capaV = this.add.circle(0.56 * centerX, 1.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
-        this.capaO = this.add.circle(0.56 * centerX, 1.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaV = this.add.circle(0.5 * centerX, 0.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaO = this.add.circle(0.5 * centerX, 0.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
 
         //Posición de los personajes en la cámara
         const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
