@@ -53,9 +53,11 @@ class IntroScene extends Phaser.Scene{
         const sombraLibro = this.add.image(0.618*centerX, 1.2*centerY, "sombraLibro");
         const libro = this.add.image(0.65*centerX, 1.2*centerY, "libro");
         
+        //Imagen del periodico
+        this.periodicoM = this.add.image(centerX, centerY, "periodicoM");
 
         //boton del chat
-        const chatButton = this.add.image(0.5*centerX, 0.2*centerY, 'chat').setScale(0.3)
+        const chatButton = this.add.image(1.85*centerX, 1.8*centerY, 'chat').setScale(0.3)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();
@@ -109,8 +111,7 @@ class IntroScene extends Phaser.Scene{
             this.game.destroy(true);
         });
 
-        //Imagen del periodico
-        this.periodicoM = this.add.image(centerX, centerY, "periodicoM");
+        
     }
 
     
