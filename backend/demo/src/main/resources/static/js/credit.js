@@ -76,7 +76,7 @@ class CreditScene extends Phaser.Scene {
 
         })
 
-        const lau = this.add.text(1.38 * centerX, 1.3 * centerY, 'Laura Facenda Estrella', {
+        const lau = this.add.text(1.38 * centerX, 1.3 * centerY, 'Laura Facenda Estrella (Fase 1 y 2)', {
             font: '35px mousy',
             color: '#42240e',
             align: 'center'
@@ -104,7 +104,7 @@ class CreditScene extends Phaser.Scene {
 
         })
 
-        const dan2=this.add.text(0.77*centerX,1.55*centerY, 'Laura Facenda Estrella', {
+        const dan2=this.add.text(0.77*centerX,1.55*centerY, 'Laura Facenda Estrella(Fase 1 y 2)', {
             font: '35px mousy',
             color: '#42240e',
             align: 'center'

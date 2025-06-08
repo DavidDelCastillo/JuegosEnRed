@@ -1,4 +1,1 @@
-ar,ar,0
-ao,ar,0
-uu,uu,0
-kitsune,hola,0
+david,123,0

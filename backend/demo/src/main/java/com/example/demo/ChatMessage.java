@@ -1,4 +1,6 @@
 package com.example.demo;
+
+import java.util.concurrent.ConcurrentHashMap;
 //en el caso de nombre de usuario seria string username
 public record ChatMessage(int id, String text) {
 
@@ -11,3 +13,5 @@ public record ChatMessage(int id, String text) {
     }
 
 }
+
+

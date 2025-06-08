@@ -63,6 +63,9 @@ public class LoginController{
         String nombreUsuario = usuario.getId();
         String password = usuario.getPassword();
         File archivoGeneral = new File("usuarios/usuarios.txt");
+        File carpeta = new File("usuarios");
+
+        if(!carpeta.exists()) carpeta.mkdirs(); //Sino existe la carpeta la crea
 
         if (!archivoGeneral.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

@@ -19,6 +19,7 @@ public class ChatController {
     private final List<ChatMessage> messages = new ArrayList<>();
     private final AtomicInteger lastId = new AtomicInteger(0);
     private final AtomicInteger userIdCounter = new AtomicInteger(0);
+    private final ConcurrentHashMap<Integer, String> userNames = new ConcurrentHashMap<>();//mapa para asociar nombres con id
     private final ConcurrentHashMap<Integer, Long> activeUsers = new ConcurrentHashMap<>(); //otro mapa igual para los UserName
 
 
@@ -45,31 +46,37 @@ public class ChatController {
 
     @PostMapping
     public void postMessage(@RequestParam String message, @RequestParam int userId) {
+        String name=userNames.getOrDefault(userId, String.valueOf(userId));
         synchronized (messages) {
-            messages.add(new ChatMessage(lastId.incrementAndGet(), userId + ": " + message));
+            messages.add(new ChatMessage(lastId.incrementAndGet(), name + ": " + message));
             if (messages.size() > 50) {
                 messages.remove(0); // Almacenar los últimos 50 mensajes
             }
         }
     }
 
-    /*@Autowired
-    private UserRepository userRepository;
-
     @PostMapping("/connect")
-    public ResponseEntity<?> connectClient(@RequestParam int userId) {
-        if (userRepository.existsById(userId)) {
-            activeUsers.put(userId, System.currentTimeMillis());
-            return ResponseEntity.ok(userId);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("success", false, "message", "Usuario no encontrado"));
+    public ResponseEntity<?> connectClient(@RequestParam String id) {
+        int userId = userIdCounter.incrementAndGet();
+        activeUsers.put(userId,System.currentTimeMillis());
+        //Asociamos la id con el nombre
+        userNames.put(userId,id);
+
+        //Mensaje conexión
+        synchronized (messages){
+            messages.add(new ChatMessage(lastId.incrementAndGet(), id+ " se ha conectado."));
         }
-    }*/
+        return ResponseEntity.ok(userId);
+    }
 
     @PostMapping("/disconnect")
-    public int disconnectClient(@RequestParam int userId) {
+    public int disconnectClient(@RequestParam int userId, @RequestParam String id) {
         activeUsers.remove(userId);
+        userNames.remove(userId); //Lo borra
+        //Mensaje desconexión
+        synchronized (messages){
+            messages.add(new ChatMessage(lastId.incrementAndGet(), id+ " se ha desconectado."));
+        }
         return activeUsers.size();
     }
 
@@ -80,7 +87,7 @@ public class ChatController {
         }
     }
     
-    @Scheduled(fixedRate = 2000) // Cada 2 segundos
+    @Scheduled(fixedRate = 15000) // Cada 2 segundos
     public void removeInactiveUsers() {
         long currentTime = System.currentTimeMillis();
         activeUsers.forEach((userId, lastActive) -> {

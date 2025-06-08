@@ -33,7 +33,7 @@ class LoginScene extends Phaser.Scene {
         this.nombre.placeholder = 'Usuario';
         this.nombre.style.position= 'absolute';
         this.nombre.style.left=`${0.6*centerX}px`;
-        this.nombre.style.top=`${0.45*centerY}px`;
+        this.nombre.style.top=`${0.8*centerY}px`;
         this.nombre.style.width= '200px';
         this.nombre.style.font= '40px mousy';
         this.nombre.style.backgroundColor = 'rgba(162, 208, 158, 0.39)';
@@ -46,7 +46,7 @@ class LoginScene extends Phaser.Scene {
         this.contra.placeholder = 'Contraseña';
         this.contra.style.position= 'absolute';
         this.contra.style.left=`${0.6*centerX}px`;
-        this.contra.style.top=`${0.6*centerY}px`;
+        this.contra.style.top=`${0.9*centerY}px`;
         this.contra.style.width= '200px';
         this.contra.style.font= '40px mousy';
         this.contra.style.backgroundColor = 'rgba(162, 208, 158, 0.39)';
@@ -95,6 +95,18 @@ class LoginScene extends Phaser.Scene {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                localStorage.setItem('chatId', user);
+                fetch("http://localhost:8080/connect?id=" + encodeURIComponent(user), {
+                method: "POST"
+                })
+                .then(res => res.json())
+                .then(id => {
+                    console.log("Conectado con ID:", id);
+                    // Puedes guardar el ID si lo necesitas: localStorage.setItem('userId', id);
+                })
+                .catch(error => {
+                    console.error("Error al conectar al chat:", error);
+                });
                 alert("Inicio de sesión exitoso");
                 this.nombre.remove();
                 this.contra.remove();
@@ -125,6 +137,17 @@ class LoginScene extends Phaser.Scene {
         .then(async response => {
         const data = await response.json().catch(() => ({})); 
         if (response.ok && data.success) {
+            localStorage.setItem('chatId', nombre);
+            fetch("http://localhost:8080/connect?id=" + encodeURIComponent(nombre), {
+                method: "POST"
+                })
+                .then(res => res.json())
+                .then(id => {
+                    console.log("Conectado con ID:", id);
+                })
+                .catch(error => {
+                    console.error("Error al conectar al chat:", error);
+            });
             alert(data.message || "Usuario registrado correctamente");
             if (this.nombre) this.nombre.remove();
             if (this.contra) this.contra.remove();
