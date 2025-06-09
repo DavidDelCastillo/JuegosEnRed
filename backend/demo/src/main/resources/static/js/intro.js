@@ -108,7 +108,8 @@ class IntroScene extends Phaser.Scene{
         }).setInteractive()
         .on('pointerdown', ()=>{
             this.sound.play("boton");
-            this.game.destroy(true);
+            this.scene.stop("IntroScene");
+            this.scene.start("LoginScene");
         });
 
         
