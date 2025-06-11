@@ -76,6 +76,15 @@ class LoginScene extends Phaser.Scene {
                 this.registrar(this.nombre.value, this.contra.value);
             });
 
+        //Botón para eliminar usuario        
+        const regText = this.add.text(0.7 * centerX, 1.45 * centerY, 'Eliminar', {
+            font: '70px mousy',
+            color: '#42240e',
+            align: 'center'
+        }).setInteractive()
+            .on('pointerdown', () => {
+                this.registrar(this.nombre.value, this.contra.value);
+            });  
     }
 
     IniciarSesion(user, password) {
