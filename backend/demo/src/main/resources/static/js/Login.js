@@ -1,207 +1,161 @@
-class LoginScene extends Phaser.Scene {
-    constructor() {
-        super({ key: 'LoginScene' });
-    }
+package com.example.demo;
 
-    preload() {
-        // carga de audios
-        this.load.audio("boton", 'assets/Clickar_Boton.wav');
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-        //carga de imágenes
-        this.load.image("fondo", 'assets/menu.png');
-        this.load.image("libro", 'assets/Libro.png');
-        this.load.image("sombraLibro", 'assets/SombraLibro.png');
-        this.load.image("periodicoM", 'assets/Menu_inicialPeri.png');
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.util.Map;
+@RestController
+@RequestMapping("/usuario")
+public class LoginController{
+    /*private final UserRepository userRepository;
 
-    }
+    public LoginController(UserRepository userRepository){
+        this.userRepository=userRepository;
+    }*/
 
-    create() {
-        //variables para meter las imagenes a posteriori
-        const centerX = this.scale.width / 2;
-        const centerY = this.scale.height / 2;
+    //Registrar Usuario
+    @PostMapping("/registro")
+    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario){
+        try{
+            String nombreUsuario = usuario.getId();
+            String password = usuario.getPassword();
+            File archivoGeneral =new File ("usuarios/usuarios.txt");
+            File carpeta = new File("usuarios");
 
-        // montaje de la escena
-        const background_menu = this.add.image(centerX, centerY, "fondo");
-        // interfaz del libro
-        const sombraLibro = this.add.image(0.618 * centerX, 1.2 * centerY, "sombraLibro");
-        const libro = this.add.image(0.65 * centerX, 1.2 * centerY, "libro");
-
-
-        //Recuadro usuario
-        this.nombre = document.createElement('input');
-        this.nombre.type= 'text';
-        this.nombre.placeholder = 'Usuario';
-        this.nombre.style.position= 'absolute';
-        this.nombre.style.left=`${0.6*centerX}px`;
-        this.nombre.style.top=`${0.8*centerY}px`;
-        this.nombre.style.width= '200px';
-        this.nombre.style.font= '40px mousy';
-        this.nombre.style.backgroundColor = 'rgba(162, 208, 158, 0.39)';
-        this.nombre.style.color='#42240e';
-        document.body.appendChild(this.nombre);
-
-        //Recuadro contraseña
-        this.contra = document.createElement('input');
-        this.contra.type= 'password';
-        this.contra.placeholder = 'Contraseña';
-        this.contra.style.position= 'absolute';
-        this.contra.style.left=`${0.6*centerX}px`;
-        this.contra.style.top=`${0.9*centerY}px`;
-        this.contra.style.width= '200px';
-        this.contra.style.font= '40px mousy';
-        this.contra.style.backgroundColor = 'rgba(162, 208, 158, 0.39)';
-        this.contra.style.color='#42240e';
-        this.contra.style.font= '40px mousy';
-        document.body.appendChild(this.contra);
-
-
-
-        //Botón para ir al inicio
-        this.add.text(0.7 * centerX, 1.05 * centerY, 'Iniciar sesión', {
-            font: '70px mousy',
-            color: '#42240e',
-            align: 'center'
-        }).setInteractive()
-            .on('pointerdown', () => {
-                this.IniciarSesion(this.nombre.value, this.contra.value);
-            });
-
-        //Botón para ir al registrarse
-        this.add.text(0.7 * centerX, 1.25 * centerY, 'Registrarse', {
-            font: '70px mousy',
-            color: '#42240e',
-            align: 'center'
-        }).setInteractive()
-            .on('pointerdown', () => {
-                this.registrar(this.nombre.value, this.contra.value);
-            });
-
-        //Botón para eliminar usuario        
-        this.add.text(0.7 * centerX, 1.45 * centerY, 'Eliminar', {
-            font: '70px mousy',
-            color: '#42240e',
-            align: 'center'
-        }).setInteractive()
-            .on('pointerdown', () => {
-                this.eliminarUsuario(this.nombre.value, this.contra.value);
-            });
- 
-    }
-
-    IniciarSesion(user, password) {
-        if (!user || !password) {
-            alert("Por favor completa todos los campos.");
-            return;
-        }
-
-        fetch("http://localhost:8080/usuario/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                id: user,
-                password: password
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                localStorage.setItem('chatId', user);
-                fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(user), {
-                method: "POST"
-                })
-                .then(res => res.json())
-                .then(id => {
-                    console.log("Conectado con ID:", id);
-                })
-                .catch(error => {
-                    console.error("Error al conectar al chat:", error);
-                });
-                alert("Inicio de sesión exitoso");
-                this.nombre.remove();
-                this.contra.remove();
-                this.scene.stop("LoginScene");
-                this.scene.start("IntroScene");
-                this.sound.play("boton");
-            } else {
-                alert("Error: " + data.message);
+            if(!carpeta.exists()) carpeta.mkdirs(); //Sino existe la carpeta la crea
+            
+            // Verificar si el usuario ya existe
+            if (archivoGeneral.exists()) {
+                try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral))) {
+                    String linea;
+                    while ((linea = reader.readLine()) != null) {
+                        String[] partes = linea.split(",");
+                        if (partes.length >= 1 && partes[0].equals(nombreUsuario)) {
+                            return ResponseEntity.status(HttpStatus.CONFLICT)
+                                .body(Map.of("success", false, "message", "Este nombre ya existe"));
+                        }
+                    }
+                }
             }
-        })
-        .catch(error => {
-            console.error("Error en el login:", error);
-            alert("Error al conectar con el servidor");
-        });
+            //Guarda la información en uno general
+            try(FileWriter write =new FileWriter(archivoGeneral, true)){
+                write.write(nombreUsuario+","+password+",0\n");
+            }
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("success", true, "message", "Usuario registrado correctamente"));
+
+        } catch(Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("success", false, "message", "Error al registrar usuario"));
+        }
     }
 
-    // Función para registrar usuario
-    registrar(nombre, contra) {
-        if (!nombre || !contra) {
-            alert("Por favor completa todos los campos.");
-            return;
+    // Carga de usuario
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUsuario(@RequestBody Usuario usuario) {
+        String nombreUsuario = usuario.getId();
+        String password = usuario.getPassword();
+        File archivoGeneral = new File("usuarios/usuarios.txt");
+        File carpeta = new File("usuarios");
+
+        if(!carpeta.exists()) carpeta.mkdirs(); //Sino existe la carpeta la crea
+
+        if (!archivoGeneral.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "No hay usuarios registrados"));
         }
-        fetch("http://localhost:8080/usuario/registro", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: nombre, password: contra })
-        })
-        .then(async response => {
-        const data = await response.json().catch(() => ({})); 
-        if (response.ok && data.success) {
-            localStorage.setItem('chatId', nombre);
-            fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(nombre), {
-                method: "POST"
-                })
-                .then(res => res.json())
-                .then(id => {
-                    console.log("Conectado con ID:", id);
-                })
-                .catch(error => {
-                    console.error("Error al conectar al chat:", error);
-            });
-            alert(data.message || "Usuario registrado correctamente");
-            if (this.nombre) this.nombre.remove();
-            if (this.contra) this.contra.remove();
-            this.scene.stop("LoginScene");
-            this.scene.start("IntroScene");
-            this.sound.play("boton");
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral))) {
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length >= 2 && partes[0].equals(nombreUsuario)) {
+                    if (partes[1].equals(password)) {
+                        return ResponseEntity.ok()
+                                .body(Map.of("success", true, "message", "Inicio de sesión exitoso"));
+                    } else {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body(Map.of("success", false, "message", "Contraseña incorrecta"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al leer usuarios"));
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("success", false, "message", "Usuario no encontrado"));
+    }
+
+    //Obtener usuario por id
+    /*@GetMapping("/{id}")
+    public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
+        Optional<Usuario> usuario = userRepository.findById(id);
+        if (usuario.isPresent()) {
+            return ResponseEntity.ok(usuario.get());
         } else {
-            alert("Error: " + (data.message || "No se pudo registrar"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "Usuario no encontrado"));
         }
-    })
-    .catch(error => {
-        console.error("Error en el registro:", error);
-        alert("Error al conectar con el servidor");
-    });
-    }
+    }*/
 
-    // Función para eliminar al usuario
-    eliminarUsuario(nombre, contra) {
-        if (!nombre || !contra) {
-            alert("Por favor completa todos los campos.");
-            return;
+    //Eliminar usuario
+    @PostMapping("/eliminar")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario){
+
+        String nombreUsuario = usuario.getId();
+        String password = usuario.getPassword();
+        File archivoGeneral = new File("usuarios/usuarios.txt");
+
+        if (!archivoGeneral.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("success", false, "message", "No hay usuarios registrados"));
         }
 
-        fetch("http://localhost:8080/usuario/eliminar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: nombre, password: contra })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(data.message || "Usuario eliminado correctamente");
-                if (this.nombre) this.nombre.remove();
-                if (this.contra) this.contra.remove();
-                this.scene.stop("LoginScene");
-                this.scene.start("LoginScene"); // Vuelve a la escena de login
-                this.sound.play("boton");
-            } else {
-                alert("Error: " + data.message);
+        try {
+            File tempFile = new File("usuarios/temp.txt");
+            boolean usuarioEncontrado = false;
+
+            try (
+                BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral));
+                PrintWriter writer = new PrintWriter(new FileWriter(tempFile))
+            ) {
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 2 && partes[0].equals(nombreUsuario) && partes[1].equals(password)) {
+                        usuarioEncontrado = true; // No lo escribimos en el archivo nuevo
+                        continue;
+                    }
+                    writer.println(linea); // Mantener otros usuarios
+                }
             }
-        })
-        .catch(error => {
-            console.error("Error al eliminar usuario:", error);
-            alert("Error al conectar con el servidor");
-        });
-    }
 
+            if (!usuarioEncontrado) {
+                tempFile.delete(); // Limpieza
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "Usuario no encontrado o contraseña incorrecta"));
+            }
+
+            // Reemplaza el archivo original
+            if (!archivoGeneral.delete() || !tempFile.renameTo(archivoGeneral)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al actualizar archivo de usuarios"));
+            }
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Usuario eliminado correctamente"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("success", false, "message", "Error al eliminar usuario"));
+        }
+    }
 }
