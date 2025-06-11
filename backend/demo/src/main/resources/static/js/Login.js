@@ -83,8 +83,9 @@ class LoginScene extends Phaser.Scene {
             align: 'center'
         }).setInteractive()
             .on('pointerdown', () => {
-                this.registrar(this.nombre.value, this.contra.value);
-            });  
+                this.eliminarUsuario(this.nombre.value, this.contra.value);
+            });
+ 
     }
 
     IniciarSesion(user, password) {
@@ -111,7 +112,6 @@ class LoginScene extends Phaser.Scene {
                 .then(res => res.json())
                 .then(id => {
                     console.log("Conectado con ID:", id);
-                    // Puedes guardar el ID si lo necesitas: localStorage.setItem('userId', id);
                 })
                 .catch(error => {
                     console.error("Error al conectar al chat:", error);
@@ -172,4 +172,36 @@ class LoginScene extends Phaser.Scene {
         alert("Error al conectar con el servidor");
     });
     }
+
+    // Función para eliminar al usuario
+    eliminarUsuario(nombre, contra) {
+        if (!nombre || !contra) {
+            alert("Por favor completa todos los campos.");
+            return;
+        }
+
+        fetch("http://localhost:8080/usuario/eliminar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: nombre, password: contra })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message || "Usuario eliminado correctamente");
+                if (this.nombre) this.nombre.remove();
+                if (this.contra) this.contra.remove();
+                this.scene.stop("LoginScene");
+                this.scene.start("LoginScene"); // Vuelve a la escena de login
+                this.sound.play("boton");
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error al eliminar usuario:", error);
+            alert("Error al conectar con el servidor");
+        });
+    }
+
 }
