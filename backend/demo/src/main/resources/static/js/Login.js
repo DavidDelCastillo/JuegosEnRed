@@ -57,7 +57,7 @@ class LoginScene extends Phaser.Scene {
 
 
         //Botón para ir al inicio
-        const logText = this.add.text(0.7 * centerX, 1.15 * centerY, 'Iniciar sesión', {
+        this.add.text(0.7 * centerX, 1.15 * centerY, 'Iniciar sesión', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
@@ -67,7 +67,7 @@ class LoginScene extends Phaser.Scene {
             });
 
         //Botón para ir al registrarse
-        const regText = this.add.text(0.7 * centerX, 1.4 * centerY, 'Registrarse', {
+        this.add.text(0.7 * centerX, 1.4 * centerY, 'Registrarse', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
@@ -77,7 +77,7 @@ class LoginScene extends Phaser.Scene {
             });
 
         //Botón para eliminar usuario        
-        const regText = this.add.text(0.7 * centerX, 1.45 * centerY, 'Eliminar', {
+        this.add.text(0.7 * centerX, 1.45 * centerY, 'Eliminar', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
