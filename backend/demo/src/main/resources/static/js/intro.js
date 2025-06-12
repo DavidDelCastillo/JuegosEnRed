@@ -101,15 +101,33 @@ class IntroScene extends Phaser.Scene{
         });
 
         //Botón para cerrar el sesión
-        const exitText = this.add.text(0.66*centerX, 1.4*centerY, 'Cerrar Sesión', {
+        const exitText = this.add.text(0.66 * centerX, 1.4 * centerY, 'Cerrar Sesión', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
         }).setInteractive()
-        .on('pointerdown', ()=>{
+        .on('pointerdown', () => {
             this.sound.play("boton");
-            this.scene.stop("IntroScene");
-            this.scene.start("LoginScene");
+
+            const userId = localStorage.getItem('chatUserId');
+            const userName = localStorage.getItem('chatId') || 'Usuario';
+
+            if (userId) {
+                $.post("/api/chat/disconnect", { userId: userId, id: userName })
+                    .always(() => {
+                        // Limpiar datos locales
+                        localStorage.removeItem('chatUserId');
+                        localStorage.removeItem('chatId');
+
+                        // Cambiar de escena
+                        this.scene.stop("IntroScene");
+                        this.scene.start("LoginScene");
+                    });
+            } else {
+                // Si no hay userId por alguna razón, continuar igualmente
+                this.scene.stop("IntroScene");
+                this.scene.start("LoginScene");
+            }
         });
 
         
