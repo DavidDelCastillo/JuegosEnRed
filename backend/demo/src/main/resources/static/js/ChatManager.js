@@ -7,10 +7,8 @@ export default class ChatManager {
         this.userCount = $('#users-count');
 
         this.lastMessageId = 0;
-
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        this.userId = isLoggedIn ? localStorage.getItem('chatUserId') : null;
-
+        this.userId = localStorage.getItem('chatUserId') || null;
+        
         // Listeners
         this.chatSend.on('click', () => this.sendMessage());
         this.chatInput.on('keypress', (e) => {
@@ -21,7 +19,6 @@ export default class ChatManager {
         this.startFetchingMessages();
         this.startFetchingUsers();
     }
-
 
     sendMessage() {
         const message = this.chatInput.val().trim();
@@ -107,10 +104,11 @@ export default class ChatManager {
 }
 
 $(document).ready(() => {
-    const chatManager = new ChatManager();
+    window.chatManager = new ChatManager();
 
     $(window).on('beforeunload', ()=>{
-        chatManager.disconnectUser();
+        window.chatManager.disconnectUser();
     });
 });
+
 
