@@ -100,35 +100,29 @@ class IntroScene extends Phaser.Scene{
             this.sound.play("boton");
         });
 
-        //Botón para cerrar el sesión
-        const exitText = this.add.text(0.66 * centerX, 1.4 * centerY, 'Cerrar Sesión', {
+        //Botón para cerrar sesión
+        const exitText = this.add.text(0.66*centerX, 1.4*centerY, 'Cerrar Sesión', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
         }).setInteractive()
-        .on('pointerdown', () => {
+        .on('pointerdown', ()=> {
             this.sound.play("boton");
 
-            const userId = localStorage.getItem('chatUserId');
-            const userName = localStorage.getItem('chatId') || 'Usuario';
-
-            if (userId) {
-                $.post("/api/chat/disconnect", { userId: userId, id: userName })
-                    .always(() => {
-                        // Limpiar datos locales
-                        localStorage.removeItem('chatUserId');
-                        localStorage.removeItem('chatId');
-
-                        // Cambiar de escena
-                        this.scene.stop("IntroScene");
-                        this.scene.start("LoginScene");
-                    });
-            } else {
-                // Si no hay userId por alguna razón, continuar igualmente
-                this.scene.stop("IntroScene");
-                this.scene.start("LoginScene");
+            // Desconectar usuario si el chat está inicializado
+            if (window.chatManager) {
+                window.chatManager.disconnectUser();
             }
+
+            // Limpiar localStorage de la sesión
+            localStorage.removeItem('chatUserId');
+            localStorage.removeItem('chatId');
+
+            // Parar escena actual e ir a LoginScene
+            this.scene.stop("IntroScene");
+            this.scene.start("LoginScene");
         });
+
 
         
     }
