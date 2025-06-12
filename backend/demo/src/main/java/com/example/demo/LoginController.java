@@ -105,18 +105,59 @@ public class LoginController{
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("success", false, "message", "Usuario no encontrado"));
         }
-    }
+    }*/
 
     //Eliminar usuario
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarUsuario(@PathVariable Integer id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return ResponseEntity.ok().body(Map.of("success", true, "message", "Usuario eliminado correctamente"));
-        } else {
+    @PostMapping("/eliminar")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario){
+
+        String nombreUsuario = usuario.getId();
+        String password = usuario.getPassword();
+        File archivoGeneral = new File("usuarios/usuarios.txt");
+
+        if (!archivoGeneral.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("success", false, "message", "Usuario no encontrado"));
+                .body(Map.of("success", false, "message", "No hay usuarios registrados"));
         }
-    }*/
+
+        try {
+            File tempFile = new File("usuarios/temp.txt");
+            boolean usuarioEncontrado = false;
+
+            try (
+                BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral));
+                PrintWriter writer = new PrintWriter(new FileWriter(tempFile))
+            ) {
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 2 && partes[0].equals(nombreUsuario) && partes[1].equals(password)) {
+                        usuarioEncontrado = true; // No lo escribimos en el archivo nuevo
+                        continue;
+                    }
+                    writer.println(linea); // Mantener otros usuarios
+                }
+            }
+
+            if (!usuarioEncontrado) {
+                tempFile.delete(); // Limpieza
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("success", false, "message", "Usuario no encontrado o contraseña incorrecta"));
+            }
+
+            // Reemplaza el archivo original
+            if (!archivoGeneral.delete() || !tempFile.renameTo(archivoGeneral)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al actualizar archivo de usuarios"));
+            }
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Usuario eliminado correctamente"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("success", false, "message", "Error al eliminar usuario"));
+        }
+    }
+
 
 }
