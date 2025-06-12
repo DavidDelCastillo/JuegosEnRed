@@ -100,8 +100,8 @@ class IntroScene extends Phaser.Scene{
             this.sound.play("boton");
         });
 
-        //Botón para cerrar el juego
-        const exitText = this.add.text(0.78*centerX, 1.4*centerY, 'Salir', {
+        //Botón para cerrar el sesión
+        const exitText = this.add.text(0.66*centerX, 1.4*centerY, 'Cerrar Sesión', {
             font: '70px mousy',
             color: '#42240e',
             align: 'center'
