@@ -7,8 +7,10 @@ export default class ChatManager {
         this.userCount = $('#users-count');
 
         this.lastMessageId = 0;
-        this.userId = localStorage.getItem('chatUserId') || null;
-        
+
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        this.userId = isLoggedIn ? localStorage.getItem('chatUserId') : null;
+
         // Listeners
         this.chatSend.on('click', () => this.sendMessage());
         this.chatInput.on('keypress', (e) => {
@@ -19,6 +21,7 @@ export default class ChatManager {
         this.startFetchingMessages();
         this.startFetchingUsers();
     }
+
 
     sendMessage() {
         const message = this.chatInput.val().trim();
