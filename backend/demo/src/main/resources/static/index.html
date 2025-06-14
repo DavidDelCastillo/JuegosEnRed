@@ -19,6 +19,18 @@
     <script src="js/derrota.js"></script>
     <script src="js/Login.js"></script>
 
+    <script src="js/GameMode.js"></script>
+    <script src="js/introLocal.js"></script>
+    <script src="js/endLocal.js"></script>
+    <script src="js/controlsLocal.js"></script>
+    <script src="js/previewLocal.js"></script>
+    <script src="js/dialogoLocal.js"></script>
+    <script src="js/creditLocal.js"></script>
+    <script src="js/pauseLocal.js"></script>
+    <script type="module" src="js/gameLocal.js"></script>
+    <script type="module" src="js/tutorialLocal.js"></script>
+    <script src="js/derrotaLocal.js"></script>
+
     <meta charset="utf-8" />
     <title>Mystery Mice</title>
 </head>
@@ -40,7 +52,9 @@
     <script type="module">
         // Configuración del juego
         import GameScene from './js/game.js';
+        import GameLoScene from './js/gameLocal.js';
         import TutorialScene from './js/tutorial.js';
+        import TutorialLoScene from './js/tutorialLocal.js';
         import ChatManager from './js/ChatManager.js';
         
         var config = {
@@ -59,7 +73,8 @@
                     debug: false,
                 },
             },
-            scene: [LoginScene, IntroScene, GameScene, ControlScene, PreviewScene, TutorialScene, PauseScene, CreditScene, DialogueScene, EndScene, LoseScene],
+            scene: [GameModeScene,LoginScene, IntroScene,IntroLoScene, GameScene,GameLoScene, ControlScene,ControlLoScene, PreviewScene,PreviewLoScene,
+             TutorialScene,TutorialLoScene, PauseScene,PauseLoScene, CreditScene,CreditLoScene, DialogueScene,DialogueLoScene, EndScene,EndLoScene, LoseScene, LoseLoScene],
         };
         const game = new Phaser.Game(config);
         

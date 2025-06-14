@@ -1,6 +1,6 @@
-class EndScene extends Phaser.Scene{
+class EndLoScene extends Phaser.Scene{
     constructor(){
-        super({key:'EndScene'});
+        super({key:'EndLoScene'});
     }
 
     preload(){
@@ -29,8 +29,8 @@ class EndScene extends Phaser.Scene{
         //Botón para volver al menú inicial
         const volver = this.add.image(1 * centerX, 1.4 * centerY, "botonS").setInteractive()
             .on('pointerdown', () => {
-                this.scene.stop("LoseScene");
-                this.scene.start("IntroScene");
+                this.scene.stop("LoseLoScene");
+                this.scene.start("IntroLoScene");
             });
     }
 }

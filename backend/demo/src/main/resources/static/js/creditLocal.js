@@ -1,6 +1,6 @@
-class CreditScene extends Phaser.Scene {
+class CreditLoScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'CreditScene' });
+        super({ key: 'CreditLoScene' });
     }
 
     preload() {
@@ -130,7 +130,7 @@ class CreditScene extends Phaser.Scene {
         const volverCr = this.add.image(0.2 * centerX, 1.7 * centerY, "volverCr")
             .setInteractive()
             .on('pointerdown', () => {
-                this.scene.stop("CreditScene");//Detiene la escena
+                this.scene.stop("CreditLoScene");//Detiene la escena
                 this.returnToCallingScene();//Llama a un método para volver a la escena anterior
                 this.sound.play("button");
             });
