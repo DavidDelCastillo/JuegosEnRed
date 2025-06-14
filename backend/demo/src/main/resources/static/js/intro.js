@@ -27,7 +27,11 @@ class IntroScene extends Phaser.Scene{
         //variables para meter las imagenes a posteriori
         const centerX = this.scale.width/2;
         const centerY = this.scale.height/2;
+
+        //Implementamos el websocker de iniciar partidas
+        this.socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
         
+                
         // activacion de sonidos
         if (!this.sound.get('musicaFondo')) {
             this.music = this.sound.add("musicaFondo", { loop: true, volume: 0.5 });
@@ -71,10 +75,30 @@ class IntroScene extends Phaser.Scene{
             align: 'center'
         }).setInteractive()
         .on('pointerdown', ()=>{
-            this.scene.stop("IntroScene");
-            this.scene.start("PreviewScene");            
+            this.socket.send("joinQueue");
+            this.waitingText.setText("Esperando usuarios ...");           
             this.sound.play("boton");
         });
+        let myRole=null;
+
+        this.socket.onmessage = (event) => {
+            if (event.data.startsWith("Esperando usuarios:")) {
+                const msg = event.data;
+                this.waitingText.setText(msg); 
+            } else if (event.data === "startGame") {
+                this.waitingText.setText("¡Partida encontrada!");
+                myRole = msg.split(":")[1];  // "raton1" o "raton2"
+                this.registry.set("rol", myRole);// Guarda esto de forma global si lo necesitas luego
+                this.scene.stop("IntroScene");
+                this.scene.start("PreviewScene"); // o la escena real del juego
+            }
+        };
+
+        //Cuadro de texto
+        this.waitingText = this.add.text(centerX, centerY + 300, '', {
+            font: '50px mousy',
+            color: '##42240e'
+        }).setOrigin(0.5);
 
         //Botón para cambiar de escena a la de los controles
         const textControl = this.add.text(0.72*centerX, 0.9*centerY, 'Controles', {

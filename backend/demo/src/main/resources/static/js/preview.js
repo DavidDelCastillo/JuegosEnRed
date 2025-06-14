@@ -14,10 +14,14 @@ class PreviewScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
+        //Obtenemos es rol del jugador
+        const myRole = this.registry.get("rol");
+
         //variable del fondo del periodico
         this.periodico = this.add.image(centerX, centerY, 'periodico')
             .setInteractive()
             .on('pointerdown', () => {
+                if (myRole !== "raton1") return;
                 message.setText('Pulsa otra vez para saltar');
                 cont++;
 
@@ -27,8 +31,9 @@ class PreviewScene extends Phaser.Scene {
                 });
 
                 if (cont > 1) {
-                    this.scene.stop("PreviewScene");
-                    this.scene.start("TutorialScene");
+                    socket.send("nextScene:TutorialScene");
+                    //this.scene.stop("PreviewScene");
+                    //this.scene.start("TutorialScene");
                 }
             });
 
@@ -69,6 +74,7 @@ class PreviewScene extends Phaser.Scene {
 
         //Si el jugador presiona espacio
         this.input.keyboard.on('keydown-SPACE', () => {
+            if (myRole !== "raton1") return;
             message.setText('Pulsa otra vez para saltar');//Sale este mensaje para que lo vuelva hacer
             cont++;
 
@@ -80,16 +86,22 @@ class PreviewScene extends Phaser.Scene {
 
             //Si lo vuelve a presionar cambiamos de escena
             if (cont > 1) {
-                this.scene.stop("PreviewScene");
-                this.scene.start("TutorialScene");
+                socket.send("nextScene:TutorialScene");
+                //this.scene.stop("PreviewScene");
+                //this.scene.start("TutorialScene");
             }
         });
 
+        
         //Si se completa el tiempo que dura la escena se cambia automáticamente
-        this.time.delayedCall(readingTime,()=>{
-            this.scene.stop("PreviewScene");
-            this.scene.start("TutorialScene");
+        if(myRole == "raton1"){
+            this.time.delayedCall(readingTime,()=>{
+                socket.send("nextScene:TutorialScene");
+            //this.scene.stop("PreviewScene");
+            //this.scene.start("TutorialScene");
         });
+        }
+        
 
         //boton del chat
         const chatButton = this.add.image(1.9*centerX, 0.2*centerY, 'chat').setScale(0.3)
@@ -97,6 +109,17 @@ class PreviewScene extends Phaser.Scene {
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();
         });
+
+        // Esperar mensaje del servidor para cambiar de escena
+        socket.onmessage = (event) => {
+            const msg = event.data;
+
+            if (msg.startsWith("nextScene:")) {
+                const nextScene = msg.split(":")[1];
+                this.scene.stop("PreviewScene");
+                this.scene.start(nextScene);
+            }
+        };
 
 
     }
