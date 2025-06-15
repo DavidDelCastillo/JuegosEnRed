@@ -1,4 +1,4 @@
-import ControlsManager from "./controlesJug.js";
+import ControlsManagerLocal from "./controlesJugLocal.js";
 
 
 export default class TutorialLoScene extends Phaser.Scene {
@@ -35,8 +35,8 @@ export default class TutorialLoScene extends Phaser.Scene {
     }
 
     create() {
-        this.controlsManager = new ControlsManager();
-        this.controlsManager.initializeControls(this);
+        this.controlsManagerLocal = new ControlsManagerLocal();
+        this.controlsManagerLocal.initializeControls(this);
 
         //variables para meter las imagenes a posteriori
         const centerX = this.scale.width / 2;
@@ -304,20 +304,20 @@ export default class TutorialLoScene extends Phaser.Scene {
     //Comprueba la dirección de los personajes y los estados de las huellas y humos
     update() {
 
-        this.controlsManager.handlePlayerMovement(
+        this.controlsManagerLocal.handlePlayerMovement(
             this.sighttail,
-            this.controlsManager.controls1,
+            this.controlsManagerLocal.controls1,
             'Sighttail'
         );
         
-        this.controlsManager.handlePlayerMovement(
+        this.controlsManagerLocal.handlePlayerMovement(
             this.scentpaw,
-            this.controlsManager.controls2,
+            this.controlsManagerLocal.controls2,
             'Scentpaw'
         );
 
         //Si la habilidad de la vista está activa se muestran las huellas
-        if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown) {
+        if (this.vistaDisp && this.controlsManagerLocal.controls1.keys.power.isDown) {
             console.log("Jugador 1 usó poder");
             this.vistaDisp = false;
             this.huellas.forEach(huella => {
@@ -341,7 +341,7 @@ export default class TutorialLoScene extends Phaser.Scene {
             });
         }
         //Si la habilidad de olfato está activa se muestran los humos
-        if (this.olfatoDisp && this.controlsManager.controls2.keys.power.isDown) {
+        if (this.olfatoDisp && this.controlsManagerLocal.controls2.keys.power.isDown) {
             console.log("Jugador 2 usó poder");
             this.olfatoDisp = false;
             this.humos.forEach(humo => {

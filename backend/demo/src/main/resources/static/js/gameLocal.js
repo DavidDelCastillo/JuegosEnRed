@@ -1,4 +1,4 @@
-import ControlsManager from "./controlesJug.js";
+import ControlsManagerLocal from "./controlesJugLocal.js";
 
 export default class GameLoScene extends Phaser.Scene {
     constructor() {
@@ -55,8 +55,8 @@ export default class GameLoScene extends Phaser.Scene {
     }
 
     create() {
-        this.controlsManager = new ControlsManager();
-        this.controlsManager.initializeControls(this);
+        this.controlsManagerLocal = new ControlsManagerLocal();
+        this.controlsManagerLocal.initializeControls(this);
 
         //Detiene la música de la pantalla anterior
         const backgroundMusic1 = this.registry.get("musicaFondo");
@@ -716,15 +716,15 @@ createAnimations(playerkey) {
 //Comprueba la dirección de los personajes y los estados de los gases y las flechas
 update() {
 
-    this.controlsManager.handlePlayerMovement(
+    this.controlsManagerLocal.handlePlayerMovement(
         this.sighttail,
-        this.controlsManager.controls1,
+        this.controlsManagerLocal.controls1,
         'Sighttail',
     );
 
-    this.controlsManager.handlePlayerMovement(
+    this.controlsManagerLocal.handlePlayerMovement(
         this.scentpaw,
-        this.controlsManager.controls2,
+        this.controlsManagerLocal.controls2,
         'Scentpaw',
     );
 
@@ -745,7 +745,7 @@ update() {
     });
 
     //Si la habilidad de la vista está activa se muestran las flechas
-    if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown) {
+    if (this.vistaDisp && this.controlsManagerLocal.controls1.keys.power.isDown) {
         console.log("Jugador 1 usó poder");
         this.vistaDisp = false;
         this.flechas.forEach(flecha => {
@@ -770,7 +770,7 @@ update() {
     }
 
     //Si la habilidad de olfato está activa se muestran los gases
-    if (this.olfatoDisp && this.controlsManager.controls2.keys.power.isDown) {
+    if (this.olfatoDisp && this.controlsManagerLocal.controls2.keys.power.isDown) {
         console.log("Jugador 2 usó poder");
         this.olfatoDisp = false;
         this.gas.forEach(gas => {

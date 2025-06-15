@@ -123,11 +123,7 @@ export default class TutorialScene extends Phaser.Scene {
 
         //Si choca con la puerta se inicia el dialogo de esta
         this.physics.add.collider(this.sighttail, this.puerta, () => {
-            this.launchDialogueScene(1);
-        });
-
-        this.physics.add.collider(this.scentpaw, this.puerta, () => {
-            this.launchDialogueScene(1);
+            this.socket.send("newDialoge:"+1+":"+roomId);
         });
 
         //Si el personaje de Sighttail se choca con el agujero usando su habilidad se inicia la conversación
@@ -147,11 +143,11 @@ export default class TutorialScene extends Phaser.Scene {
         //Ponemos las huellas invisibles
         const oscuridad = this.add.rectangle(centerX, centerY, 2 * centerX, 2 * centerY, 0x000000, 0.5);
 
-        const huella1 = this.add.image(0.3 * centerX, 1.2 * centerY, 'huellaD').setScale(2).setVisible(false);
-        const huella2 = this.add.image(0.5 * centerX, 1.3 * centerY, 'huellaD').setScale(2).setVisible(false);
-        const huella3 = this.add.image(0.7 * centerX, 1.1 * centerY, 'huellaD').setScale(2).setVisible(false);
-        const huella4 = this.add.image(1.2 * centerX, 1.2 * centerY, 'huellaD').setScale(2).setVisible(false);
-        const huella5 = this.add.image(1.5 * centerX, 0.9 * centerY, 'huellaA').setScale(2).setVisible(false);
+        const huella1 = this.add.image(0.3 * centerX, 1.2 * centerY, 'huellaD').setScale(2).setVisible(false).setName("huella1");
+        const huella2 = this.add.image(0.5 * centerX, 1.3 * centerY, 'huellaD').setScale(2).setVisible(false).setName("huella1");
+        const huella3 = this.add.image(0.7 * centerX, 1.1 * centerY, 'huellaD').setScale(2).setVisible(false).setName("huella1");
+        const huella4 = this.add.image(1.2 * centerX, 1.2 * centerY, 'huellaD').setScale(2).setVisible(false).setName("huella1");
+        const huella5 = this.add.image(1.5 * centerX, 0.9 * centerY, 'huellaA').setScale(2).setVisible(false).setName("huella1");
 
         //Las añadimos al array
         this.huellas.push(huella1);
@@ -161,11 +157,11 @@ export default class TutorialScene extends Phaser.Scene {
         this.huellas.push(huella5)
 
         //Ponemos los humos
-        const humo1 = this.add.image(0.9 * centerX, 1.5 * centerY, 'humo').setScale(2).setVisible(false);
-        const humo2 = this.add.image(0.6 * centerX, 1.7 * centerY, 'humo').setScale(2).setVisible(false);
-        const humo3 = this.add.image(centerX, centerY, 'humo').setScale(2).setVisible(false);
-        const humo4 = this.add.image(1.3 * centerX, 0.7 * centerY, 'humov').setScale(2).setVisible(false);
-        const humo5 = this.add.image(1.2 * centerX, 0.4 * centerY, 'humov').setScale(2).setVisible(false);
+        const humo1 = this.add.image(0.9 * centerX, 1.5 * centerY, 'humo').setScale(2).setVisible(false).setName("humo1");
+        const humo2 = this.add.image(0.6 * centerX, 1.7 * centerY, 'humo').setScale(2).setVisible(false).setName("humo2");
+        const humo3 = this.add.image(centerX, centerY, 'humo').setScale(2).setVisible(false).setName("humo3");
+        const humo4 = this.add.image(1.3 * centerX, 0.7 * centerY, 'humov').setScale(2).setVisible(false).setName("humo4");
+        const humo5 = this.add.image(1.2 * centerX, 0.4 * centerY, 'humov').setScale(2).setVisible(false).setName("humo5");
 
         //Los añadimos al array
         this.humos.push(humo1);
@@ -200,6 +196,83 @@ export default class TutorialScene extends Phaser.Scene {
         // Lanzar el primer diálogo
         this.launchDialogueScene(0);
 
+        // Escuchar mensajes WebSocket
+        this.socket.addEventListener('message', (event) => {
+            const msg = event.data;
+            //Cambio de escena
+            if (msg.startsWith("nextScene:")) {
+                const nextScene = msg.split(":")[1];
+                const msgRoomId = msg.split(":")[2];
+
+                if(msgRoomId==roomId){
+                    this.scene.stop("TutorialScene");
+                    this.scene.start(nextScene);
+                }
+            }
+            else if(msg.startsWith("newDialoge:")){
+                const int =msg.split(":")[1];
+                const msgRoomId = msg.split(":")[2];
+                if(msgRoomId==roomId){
+                    this.launchDialogueScene(parseInt(int));
+                }
+            }
+            else if (msg.startsWith("positionUpdate:")) {// Elimina el prefijo
+                const content = msg.slice("positionUpdate:".length);
+                console.log(content);
+                // Busca el primer ":" para separar roomId y el JSON
+                const firstColonIndex = content.indexOf(":");
+                const msgRoomId = content.slice(0, firstColonIndex);
+                const jsonString = content.slice(firstColonIndex + 1);
+
+                let payload;
+                try {
+                    payload = JSON.parse(jsonString);
+                } catch (e) {
+                    console.error("JSON malformado recibido:", jsonString);
+                    return;
+                }
+
+                if (msgRoomId !== roomId) return;
+                console.log("Recibido update", payload);
+
+                if (payload.role === "raton1" && myRole === "raton2") {
+                    this.sighttail.x = payload.x;
+                    this.sighttail.y = payload.y;
+                } else if (payload.role === "raton2" && myRole === "raton1") {
+                    this.scentpaw.x = payload.x;
+                    this.scentpaw.y = payload.y;
+                }
+            }else if(msg.startsWith("abilityOn:")){
+                const msgRoomId =msg.split(":")[1];
+                let Xdisp= msg.split(":")[2];
+                let obs = msg.split(":")[3];
+                let capaX= msg.split(":")[4];
+                let durX= msg.split(":")[5];
+                let cargaX = msg.split(":")[6];
+                if(msgRoomId==roomId){
+                    Xdisp = false;
+                    obs.forEach(ob => {
+                       ob.setVisible(true);
+                    });
+
+                    capaX.setVisible(true);
+
+                    //logica del timer 
+                    this.time.delayedCall(durX, () => {
+                        obs.forEach(ob => {
+                            ob.setVisible(false);
+                        });
+
+                    });
+
+                    this.time.delayedCall(cargaX, () => {
+                        Xdisp = true;
+                        capaX.setVisible(false);
+                    });
+                }
+            }
+        });
+
 
     }
 
@@ -207,7 +280,7 @@ export default class TutorialScene extends Phaser.Scene {
     checkAgujeroInteraction(playerKey) {
         this.input.keyboard.on('keydown-E', () => {
             if (myRole == "raton1" && this.agujero.visible) {
-                this.launchDialogueScene(2);
+                this.socket.send("newDialoge:"+2+":"+roomId);
                 this.time.delayedCall(500, () => {
                     this.socket.send("nextScene:GameScene:"+roomId);
                 })
@@ -315,64 +388,60 @@ export default class TutorialScene extends Phaser.Scene {
 
     //Comprueba la dirección de los personajes y los estados de las huellas y humos
     update() {
+        
+        const myRole = this.registry.get("rol");
+        const roomId = this.registry.get("room");
 
-        this.controlsManager.handlePlayerMovement(
+        // Enviar mi posición cada 50ms
+        if (!this.lastSent || this.time.now - this.lastSent > 50) {
+            let data = null;
+
+            if (myRole === "raton1") {
+                data = {
+                    role: "raton1",
+                    x: this.sighttail.x,
+                    y: this.sighttail.y,
+                };
+            } else if (myRole === "raton2") {
+                data = {
+                    role: "raton2",
+                    x: this.scentpaw.x,
+                    y: this.scentpaw.y,
+                };
+            }
+
+            if (data) {
+                this.socket.send(`positionUpdate:${roomId} : ${JSON.stringify(data)}`);
+                this.lastSent = this.time.now;
+            }
+        }
+
+        if(myRole==="raton1"){
+            this.controlsManager.handlePlayerMovement(
             this.sighttail,
             this.controlsManager.controls1,
             'Sighttail'
-        );
-        
-        this.controlsManager.handlePlayerMovement(
+            );
+        } else if(myRole==="raton2"){
+            this.controlsManager.handlePlayerMovement(
             this.scentpaw,
             this.controlsManager.controls2,
             'Scentpaw'
-        );
-
+            );
+        }
+        
+        
+        
         //Si la habilidad de la vista está activa se muestran las huellas
         if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown) {
             console.log("Jugador 1 usó poder");
-            this.vistaDisp = false;
-            this.huellas.forEach(huella => {
-                huella.setVisible(true);
-            });
-
-            this.capaV.setVisible(true);
-
-            //logica del timer 
-            this.time.delayedCall(this.durVista, () => {
-                this.huellas.forEach(huella => {
-                    huella.setVisible(false);
-                });
-
-            });
-
-            this.time.delayedCall(this.cargaVista, () => {
-                this.vistaDisp = true;
-                this.capaV.setVisible(false);
-                console.log("vista disponible");
-            });
+            this.socket.send("abilityOn:"+roomId+":"+this.vistaDisp+":"+this.huellas+":"+this.capaV+":"+this.durVista+":"+this.cargaVista);
+            
         }
         //Si la habilidad de olfato está activa se muestran los humos
         if (this.olfatoDisp && this.controlsManager.controls2.keys.power.isDown) {
             console.log("Jugador 2 usó poder");
-            this.olfatoDisp = false;
-            this.humos.forEach(humo => {
-                humo.setVisible(true);
-            });
-
-            this.capaO.setVisible(true);
-
-            this.time.delayedCall(this.durOlfato, () => {
-                this.humos.forEach(humo => {
-                    humo.setVisible(false);
-                });
-            });
-
-            this.time.delayedCall(this.cargaOlfato, () => {
-                this.olfatoDisp = true;
-                this.capaO.setVisible(false);
-                console.log("olfato disponible");
-            });
+            this.socket.send("abilityOn:"+roomId+":"+this.olfatoDisp+":"+this.humos+":"+this.capaO+":"+this.durOlfato+":"+this.cargaOlfato);
         }
 
         // Centrar cámara entre los dos jugadores
@@ -382,20 +451,7 @@ export default class TutorialScene extends Phaser.Scene {
 
 
 
-        // Escuchar mensajes WebSocket
-        this.socket.addEventListener('message', (event) => {
-            const msg = event.data;
-            //Cambio de escena
-            if (msg.startsWith("nextScene:")) {
-                const nextScene = msg.split(":")[1];
-                const msgRoomId = msg.split(":")[2];
-
-                if(msgRoomId==roomId){
-                    this.scene.stop("TutorialScene");
-                    this.scene.start(nextScene);
-                }
-            }
-        });
+        
     }
 
 }
