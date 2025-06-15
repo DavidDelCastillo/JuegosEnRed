@@ -53,6 +53,19 @@ public class Matchmaking extends TextWebSocketHandler {
             }
             
         }
+
+        if (payload.startsWith("dialogueNext:")) {
+            Room room = findRoomForPlayer(session);
+            if(room !=null){
+                // Reenviar el mensaje a todos los jugadores emparejados con esta sala
+                for (WebSocketSession s : room.getPlayers()) {
+                    if (s.isOpen()) {
+                        s.sendMessage(new TextMessage(payload));
+                    }
+                }
+            }
+            
+        }
     }
 
     @Override

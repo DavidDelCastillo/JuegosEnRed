@@ -418,18 +418,58 @@ class DialogueScene extends Phaser.Scene {
                 this.callingScene = this.scene.settings.data?.callingScene || null;//Se guarda la escena pausada
                 this.updateDialogue();//Llama a la función para actualizar el dialogo
                 this.primerDialCaz = true;
+                const myRole = this.registry.get("rol");
+                const roomId = this.registry.get("room");
+                // Crear y guardar socket en registry si no existe (evitar crear múltiples)
+                if (!this.registry.get("socket")) {
+                const socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+                this.registry.set("socket", socket);
+
+                // Cuando se abra la conexión, unirse a la cola de matchmaking
+                socket.addEventListener('open', () => {
+                        socket.send("joinQueue");
+                });
+                }
+
+                this.socket = this.registry.get("socket");
+
+                // Escuchar mensajes WebSocket
+                this.socket.addEventListener('message', (event) => {
+                        console.log("Escuchando mensaje");
+                        const msg = event.data;
+                        if (msg.startsWith("dialogueNext:")) {
+                                console.log("Cambiando dialogo");
+                                const msgRoomId = msg.split(":")[1];
+
+                                if(msgRoomId==roomId){
+                                        this.nextDialogue();
+                                }
+                        }
+                });
 
                 //Si se hace click se salta al siguiente dialogo
                 this.input.on('pointerdown', () => {
-                        this.nextDialogue();
+                        const myRole = this.registry.get("rol");
+                        const roomId = this.registry.get("room");
+                        if(myRole === "raton1"){
+                                this.socket.send("dialogueNext:"+roomId);
+                        }
                 });
 
                 // letras que skipean dialogo -> de cada raton
                 this.input.keyboard.on('keydown-SPACE', () => {
-                        this.nextDialogue();
+                        const myRole = this.registry.get("rol");
+                        const roomId = this.registry.get("room");
+                        if(myRole === "raton1"){      
+                                this.socket.send("dialogueNext:"+roomId);
+                        }
                 });
                 this.input.keyboard.on('keydown-E', () => {
-                        this.nextDialogue();
+                        const myRole = this.registry.get("rol");
+                        const roomId = this.registry.get("room");
+                        if(myRole === "raton1"){
+                                this.socket.send("dialogueNext:"+roomId);
+                        }
                 });
 
 
