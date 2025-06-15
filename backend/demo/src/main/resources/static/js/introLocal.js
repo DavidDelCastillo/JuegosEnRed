@@ -13,6 +13,7 @@ class IntroLoScene extends Phaser.Scene{
         //carga de imágenes
         this.load.image("fondo", 'assets/menu.png');
         this.load.image("libro", 'assets/Libro.png');
+        this.load.image("volverB", 'assets/backbutton.png');
         this.load.image("sombraLibro", 'assets/SombraLibro.png');
         this.load.image("periodicoM", 'assets/Menu_inicialPeri.png');
         $(document).ready(function(){
@@ -91,6 +92,36 @@ class IntroLoScene extends Phaser.Scene{
             this.scene.launch('CreditLoScene', { callingScene: this.scene.key });
             this.sound.play("boton");
         });
+        
+        // Botón para volver a la escena anterior
+        const volverB = this.add.image(1.8*centerX,0.25*centerY, "volverB")
+        .setInteractive()
+        .on('pointerdown', ()=>{
+            this.sound.play("boton");
+
+            if (this.callingScene) {
+                this.scene.stop("IntroLoScene");
+                this.returnToCallingScene();
+            } else {
+                // Si no hay escena llamante, volvemos a MenuPrincipal o la que sea
+                this.scene.start("GameModeScene");
+            }
+        });
+
+        volverB.setScale(0.4);
+
+
+        // guardar escena de llamada
+        this.callingScene = this.scene.settings.data?.callingScene || null;
+    }
+
+    returnToCallingScene() {
+        if (this.callingScene) {
+            this.scene.stop();
+            this.scene.resume(this.callingScene);
+        } else {
+            console.error("No callingScene provided");
+        }
     }
 
     
