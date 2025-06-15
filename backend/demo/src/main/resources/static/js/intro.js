@@ -126,7 +126,9 @@ class IntroScene extends Phaser.Scene {
                 this.waitingText.setText(event.data);
             } else if (event.data.startsWith("startGame:")) {
                 const myRole = event.data.split(":")[1];
+                const roomId =event.data.split(":")[2];
                 this.registry.set("rol", myRole);
+                this.registry.set("room", roomId);
                 this.registry.set("socket", this.socket);
                 this.waitingText.setText("¡Partida encontrada!");
                 this.scene.stop("IntroScene");

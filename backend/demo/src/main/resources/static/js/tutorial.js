@@ -42,6 +42,22 @@ export default class TutorialScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
 
+        const myRole = this.registry.get("rol");
+        const roomId = this.registry.get("room");
+
+        // Crear y guardar socket en registry si no existe (evitar crear múltiples)
+        if (!this.registry.get("socket")) {
+            const socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+            this.registry.set("socket", socket);
+
+            // Cuando se abra la conexión, unirse a la cola de matchmaking
+            socket.addEventListener('open', () => {
+                socket.send("joinQueue");
+            });
+        }
+
+        this.socket = this.registry.get("socket");
+
         //Creamos unos arrays para meter las imagenes de las huellas y el humo
         this.huellas = [];
         this.humos = [];
@@ -190,23 +206,12 @@ export default class TutorialScene extends Phaser.Scene {
     //Confirma la interacción con el agujero
     checkAgujeroInteraction(playerKey) {
         this.input.keyboard.on('keydown-E', () => {
-            if (playerKey === 'Sighttail' && this.agujero.visible) {
+            if (myRole == "raton1" && this.agujero.visible) {
                 this.launchDialogueScene(2);
                 this.time.delayedCall(500, () => {
-                    this.scene.stop('TutorialScene');
-                    this.scene.start('GameScene');
+                    this.socket.send("nextScene:GameScene:"+roomId);
                 })
 
-            }
-        });
-
-        this.input.keyboard.on('keydown-SPACE', () => {
-            if (playerKey === 'Scentpaw' && this.agujero.visible) {
-                this.launchDialogueScene(2);
-                this.time.delayedCall(500, () => {
-                    this.scene.stop('TutorialScene');
-                    this.scene.start('GameScene');
-                })
             }
         });
     }
@@ -376,6 +381,21 @@ export default class TutorialScene extends Phaser.Scene {
         this.cameras.main.centerOn(this.centerjX, this.centerjY);
 
 
+
+        // Escuchar mensajes WebSocket
+        this.socket.addEventListener('message', (event) => {
+            const msg = event.data;
+            //Cambio de escena
+            if (msg.startsWith("nextScene:")) {
+                const nextScene = msg.split(":")[1];
+                const msgRoomId = msg.split(":")[2];
+
+                if(msgRoomId==roomId){
+                    this.scene.stop("TutorialScene");
+                    this.scene.start(nextScene);
+                }
+            }
+        });
     }
 
 }

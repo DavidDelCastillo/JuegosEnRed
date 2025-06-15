@@ -12,6 +12,7 @@ class PreviewScene extends Phaser.Scene {
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
         const myRole = this.registry.get("rol");
+        const roomId = this.registry.get("room");
 
         // Crear y guardar socket en registry si no existe (evitar crear múltiples)
         if (!this.registry.get("socket")) {
@@ -70,7 +71,7 @@ class PreviewScene extends Phaser.Scene {
             cont++;
 
             if (cont > 1) {
-                this.socket.send("nextScene:TutorialScene");
+                this.socket.send("nextScene:TutorialScene:"+roomId);
             } else {
                 if (resetTimer) {
                     this.time.removeEvent(resetTimer);
@@ -88,7 +89,7 @@ class PreviewScene extends Phaser.Scene {
 
         if (myRole === "raton1") {
             this.time.delayedCall(readingTime, () => {
-                this.socket.send("nextScene:TutorialScene");
+                this.socket.send("nextScene:TutorialScene:"+roomId);
             });
         }
 
@@ -105,8 +106,12 @@ class PreviewScene extends Phaser.Scene {
             const msg = event.data;
             if (msg.startsWith("nextScene:")) {
                 const nextScene = msg.split(":")[1];
-                this.scene.stop("PreviewScene");
-                this.scene.start(nextScene);
+                const msgRoomId = msg.split(":")[2];
+
+                if(msgRoomId==roomId){
+                    this.scene.stop("PreviewScene");
+                    this.scene.start(nextScene);
+                }
             }
         });
     }
