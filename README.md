@@ -17,10 +17,7 @@ Java 8 (o una versión superior)
 Java JDK 17 (o una versión superior)
 
 Además, en caso de querer ejecutar o modificar el proyecto desde un entorno como Visual Studio Code, se deben instalar las siguientes extensiones:
-Spring Boot Tools
-Spring Boot Dashboard
-Spring Boot Extension Pack
-Spring Initializer Java Support
+Spring Boot Tools, Spring Boot Dashboard, Spring Boot Extension Pack, Spring Initializer Java Support
 
 Extrae el archivo .zip en una carpeta de tu equipo.
 Localiza el archivo .jar.
@@ -369,7 +366,7 @@ El juego mezcla la estética pixel art in-game y mantiene una estetica 2D conven
 
 # WEBSOCKETS
 Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego: 
-- Permite sincronizar a todos los jugadores para cambiar simultáneamente de escena cuando se alcanza un determinado evento o condición en la partida.
+- Permite sincronizar a todos los jugadores para cambiar simultáneamente de escena cuando se alcanza un determinado evento.
 - Se gestionan los diálogos, permitiendo que todos los jugadores avancen de forma sincronizada en las conversaciones.
 - Los movimientos de los personajes se transmiten a través del WebSocket.
 - Cuando un jugador activa una habilidad, al otro jugador también le aparece el uso de la habilidad de su compañero.
