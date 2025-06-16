@@ -115,6 +115,36 @@ public class Matchmaking extends TextWebSocketHandler {
                 }
             }
         }
+        if (payload.equals("leaveRoom")) {
+            Room room = findRoomForPlayer(session);
+            if (room != null) {
+                room.getPlayers().remove(session);
+                if (room.getPlayers().isEmpty()) {
+                    rooms.remove(room);
+                }
+            }
+            waitingPlayers.remove(session);
+            return;
+        }
+
+        if (payload.equals("leaveRoom")) {
+            Room room = findRoomForPlayer(session);
+            if (room != null) {
+                // Avisamos a todos los jugadores que deben salir
+                for (WebSocketSession s : room.getPlayers()) {
+                    try {
+                        if (s.isOpen()) {
+                            s.sendMessage(new TextMessage("leaveRoom"));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                rooms.remove(room); // Eliminamos la sala
+            }
+            waitingPlayers.remove(session); // Por si estaba esperando
+            return;
+}
     }
 
     @Override
@@ -123,7 +153,15 @@ public class Matchmaking extends TextWebSocketHandler {
         Room room = findRoomForPlayer(session);
         if (room != null) {
             room.getPlayers().remove(session);
-            if (room.getPlayers().isEmpty()) {
+            // Notificamos al otro jugador que vuelva al menú
+            for (WebSocketSession s : room.getPlayers()) {
+                if (s.isOpen()) {
+                    try {
+                        s.sendMessage(new TextMessage("forceReturnToIntro"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 rooms.remove(room);
             }
         }

@@ -539,6 +539,9 @@ export default class GameScene extends Phaser.Scene {
                         this.sound.play("Daño");
                     }
                 }
+            } else if (msg.startsWith("forceReturnToIntro")) {
+                this.scene.stop("GameScene");
+                this.scene.start("IntroScene");
             }
         });
 

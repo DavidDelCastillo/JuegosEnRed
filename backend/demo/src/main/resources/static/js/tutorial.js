@@ -281,6 +281,9 @@ export default class TutorialScene extends Phaser.Scene {
                     }
                     
                 }
+            } else if (msg.startsWith("forceReturnToIntro")) {
+                this.scene.stop("TutorialScene");
+                this.scene.start("IntroScene");
             }
         });
 

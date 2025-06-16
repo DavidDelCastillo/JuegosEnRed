@@ -113,6 +113,11 @@ class PreviewScene extends Phaser.Scene {
                     this.scene.start(nextScene);
                 }
             }
+
+            if (msg.startsWith("forceReturnToIntro")) {
+                this.scene.stop("PreviewScene");
+                this.scene.start("IntroScene");
+            }
         });
     }
 }

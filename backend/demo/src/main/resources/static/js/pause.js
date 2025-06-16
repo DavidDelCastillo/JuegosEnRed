@@ -20,6 +20,19 @@ class PauseScene extends Phaser.Scene {
     }
 
     create() {
+
+        // Crear y guardar socket en registry si no existe (evitar crear múltiples)
+        if (!this.registry.get("socket")) {
+            const socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+            this.registry.set("socket", socket);
+
+            // Cuando se abra la conexión, unirse a la cola de matchmaking
+            socket.addEventListener('open', () => {
+                socket.send("joinQueue");
+            });
+        }
+
+        this.socket = this.registry.get("socket");
         //variables para meter las imagenes a posteriori
         const centerX = this.scale.width / 2;
         const centerY = this.scale.height / 2;
@@ -37,9 +50,9 @@ class PauseScene extends Phaser.Scene {
         //Botón para volver al menú inicial
         const salir = this.add.image(0.4 * centerX, 0.9 * centerY, "salir").setInteractive()
             .on('pointerdown', () => {
-                this.scene.stop("PauseScene");
-                this.stopCallingScene();//Detiene la escena anterior
-                this.scene.start("IntroScene");
+                if (this.socket && this.socket.connected) {
+                    this.socket.send("LeaveRoom");
+                }
             });
 
         //Botón que te envía a la escena de créditos
@@ -60,6 +73,18 @@ class PauseScene extends Phaser.Scene {
 
         //Se guarda la escena que fué pausada para cambiar a esta interfaz
         this.callingScene = this.scene.settings.data?.callingScene || null;
+
+        this.socket.onmessage = (event) => {
+            const msg = event.data;
+
+            if (msg.startsWith("leaveRoom")) {
+                console.log("Volviendo a INTRO");
+                // Detenemos todas las escenas relevantes y volvemos al menú
+                this.scene.stop("PauseScene");
+                this.scene.stop("GameLoScene"); // o la escena de juego activa
+                this.scene.start("IntroScene");
+            }
+        };
     }
 
     //función para manejar la llamada entre distintas escenas
