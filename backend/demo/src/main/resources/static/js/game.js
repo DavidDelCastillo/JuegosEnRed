@@ -822,17 +822,30 @@ update() {
     const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
     const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
     const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
+    let lastControl =null;
 
     this.controlsManager.handlePlayerMovement(player, controls, playerName);
 
     if (controls.keys.up.isDown) {
-        this.socket.send("move:"+roomId+":"+playerName+":up");
+        if (lastControl!=controls.keys.up.isDown){
+            this.socket.send("move:"+roomId+":"+playerName+":up");
+            lastControl = controls.keys.up.isDown;
+        }
     } else if (controls.keys.down.isDown) {
-        this.socket.send("move:"+roomId+":"+playerName+":down");
+        if (lastControl!=controls.keys.down.isDown){
+            this.socket.send("move:"+roomId+":"+playerName+":down");
+            lastControl = controls.keys.down.isDown;
+        }
     } else if (controls.keys.left.isDown) {
-        this.socket.send("move:"+roomId+":"+playerName+":left");
+        if (lastControl!=controls.keys.left.isDown){
+            this.socket.send("move:"+roomId+":"+playerName+":left");
+            lastControl = controls.keys.left.isDown;
+        }
     } else if (controls.keys.right.isDown) {
-        this.socket.send("move:"+roomId+":"+playerName+":right");
+        if (lastControl!=controls.keys.right.isDown){
+            this.socket.send("move:"+roomId+":"+playerName+":right");
+            lastControl = controls.keys.right.isDown;
+        }
     }
     //Movimiento de las flechas
     this.flechas.forEach((flecha) => {

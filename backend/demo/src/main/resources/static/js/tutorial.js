@@ -303,15 +303,29 @@ export default class TutorialScene extends Phaser.Scene {
 
         this.controlsManager.handlePlayerMovement(player, controls, playerName);
 
+        this.controlsManager.handlePlayerMovement(player, controls, playerName);
+
         if (controls.keys.up.isDown) {
-            this.socket.send("move:"+roomId+":"+playerName+":up");
+            if (lastControl!=controls.keys.up.isDown){
+                this.socket.send("move:"+roomId+":"+playerName+":up");
+                lastControl = controls.keys.up.isDown;
+            }
         } else if (controls.keys.down.isDown) {
-            this.socket.send("move:"+roomId+":"+playerName+":down");
+            if (lastControl!=controls.keys.down.isDown){
+                this.socket.send("move:"+roomId+":"+playerName+":down");
+                lastControl = controls.keys.down.isDown;
+            }
         } else if (controls.keys.left.isDown) {
-            this.socket.send("move:"+roomId+":"+playerName+":left");
+            if (lastControl!=controls.keys.left.isDown){
+                this.socket.send("move:"+roomId+":"+playerName+":left");
+                lastControl = controls.keys.left.isDown;
+            }
         } else if (controls.keys.right.isDown) {
-            this.socket.send("move:"+roomId+":"+playerName+":right");
-        }
+            if (lastControl!=controls.keys.right.isDown){
+                this.socket.send("move:"+roomId+":"+playerName+":right");
+                lastControl = controls.keys.right.isDown;
+            }
+        } 
         //Si la habilidad de la vista está activa se muestran las huellas
         if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown && myRole == "raton1") {
             console.log("Jugador 1 usó poder");
