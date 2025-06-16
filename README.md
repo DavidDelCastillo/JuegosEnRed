@@ -122,6 +122,8 @@ Al haber dos personajes jugables cada uno se maneja con unas teclas completament
    
 7. Pantalla de derrota: pantalla que aparece cuando uno de los ratones muere. 
 
+8. Login: al inicio del juego, se ha añadidio como primera pantalla un registro e inicio de sesión para los usuarios.
+
 Se incluye a continuación una versión ilustrada de los estados, con las condiciones para pasar de unos a otros: 
 ![Diagrama Estados F3](https://github.com/user-attachments/assets/56f79e4d-f124-4dd7-b1c4-94cc12347979)
 > Mapa de estados actualizado (Figura 4)
@@ -134,13 +136,15 @@ Un estilo minimalista, con flechas y poco texto sería lo más adecuado para est
 
 Se describen los botones a partir de los distintos estados: 
 
-1. Menú principal: botones de jugar, salir, controles y créditos.
+1. Menú principal: botones de jugar, salir, controles, créditos y cerrar sesión.
 
 ![MenuRef](https://github.com/user-attachments/assets/9273f467-b8b6-4315-9459-172a74988b4b)
 > Boceto del menú principal (Figura 5)
 
 ![MenuInicio](https://github.com/user-attachments/assets/f2144c8d-5edb-4009-b24d-237aeae38b17)
 > Interfaz menú de inicio (Figura 6)
+
+
 
 2. Menú de pausa: reanudar (volver a la pantalla anterior), volver al menú y créditos.
 
@@ -165,6 +169,15 @@ Se describen los botones a partir de los distintos estados:
 6. Pantalla de derrota: botón para volver al menú inicial.
 ![Derrota](https://github.com/user-attachments/assets/e3207e45-6568-4664-a3ea-5a5832ad971c)
 >Interfaz pantalla de derrota (Figura 12)
+
+8. Botón de chat: botón que hay en todas las escenas (a excepción del login) para abrir el chat.
+
+
+9. Pantalla de login: pantalla de acceso por registro o inicio de sesión con usuario y contraseña.
+
+
+10. Pantalla de vistoria: se muestra al acabar el juego existosamente y te devuelve al menú principal.
+
 
 
 # DESARROLLO DEL JUEGO 
@@ -295,7 +308,7 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. Durante la segunda fase se ha encargado de diseñar y crear los sprite sheet de los personajes, además de los poderes (las huellas y el humo que se ve) y el periodico. Además de esto ha programado código de gestión de pausa y del fondo.
   
-3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase y cierta parte de la programación.
+3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase, creado los diagramas del flujo uy UML, así como las modificaciones de la memoria y parte de la programación.
 
 ### David del Castillo Enríquez
 
@@ -303,7 +316,7 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. En esta segunda fase se ha encargado de realizar los tilemaps de los dos escenarios principales, los sprites de las trampas, ilustrar los menús de las interfaces, crear los logos de las habilidades, además de programar las interfaces de créditos y controles.
    
-3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel.
+3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel, así como la corrección del chat y la implementación del login.
 
 ### Daniel Duque Rodríguez
 
@@ -311,14 +324,13 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. Durante la segunda fase se ha encargado de  la búsqueda de sonidos y música, guión y realización de algunos pequeños assets sueltos, así como de ciertas partes de la programación.
    
-3.  Durante la tercera fase se ha encargado de  la búsqueda de sonidos y música y ciertas partes de la programación
+3.  Durante la tercera fase se ha encargado de  la búsqueda de sonidos y música y parte de la programación del login y chat.
 
-### Laura Facenda Estrella
+### Laura Facenda Estrella (hasta la fase 3)
 
 1. Durante la primera parte todo el diseño del juego, los niveles, la historia las mecánicas, etc.
   
 2. En la segunda fase ha diseño de tipografía propia así como la mayor parte de programación.
    
-3. En la tercera fase ha creado el servidor, implementado el chat, como gran parte de la programación.
+3. En la tercera fase ha creado el servidor, implementado el parte del chat, como parte de la programación.
 
-A falta de contenido por añadir se podrían modificar los roles.
