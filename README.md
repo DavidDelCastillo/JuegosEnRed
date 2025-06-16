@@ -125,7 +125,7 @@ Al haber dos personajes jugables cada uno se maneja con unas teclas completament
 8. Login: al inicio del juego, se ha añadidio como primera pantalla un registro e inicio de sesión para los usuarios.
 
 Se incluye a continuación una versión ilustrada de los estados, con las condiciones para pasar de unos a otros: 
-![Diagrama Estados F3](https://github.com/user-attachments/assets/56f79e4d-f124-4dd7-b1c4-94cc12347979)
+![diagramaFase3](https://github.com/user-attachments/assets/d304d65c-c2e3-4551-981d-71b896181f5a)
 > Mapa de estados actualizado (Figura 4)
 
 ## Interfaces 
@@ -141,7 +141,7 @@ Se describen los botones a partir de los distintos estados:
 ![MenuRef](https://github.com/user-attachments/assets/9273f467-b8b6-4315-9459-172a74988b4b)
 > Boceto del menú principal (Figura 5)
 
-![MenuInicio](https://github.com/user-attachments/assets/f2144c8d-5edb-4009-b24d-237aeae38b17)
+![CapIntro](https://github.com/user-attachments/assets/01260df3-a6d1-4d93-83b8-6f50da85a394)
 > Interfaz menú de inicio (Figura 6)
 
 
@@ -174,7 +174,8 @@ Se describen los botones a partir de los distintos estados:
 
 
 9. Pantalla de login: pantalla de acceso por registro o inicio de sesión con usuario y contraseña.
-
+![CapLogin](https://github.com/user-attachments/assets/551e3044-0655-421c-8874-c0e64002dba6)
+>Interfaz pantalla de login (Figura 13)
 
 10. Pantalla de vistoria: se muestra al acabar el juego existosamente y te devuelve al menú principal.
 
@@ -195,10 +196,10 @@ Este cazador murió tras la traición de otro habitante y por ello se encuentra 
 En este nivel, los jugadores llegan a la puerta de la cripta, una zona con muy poca iluminación, y se encuentran con la puerta cerrada. Mediante la vista de Sighttail y el olfato de Scentpaw encontrarán un agujero en la cripta para poder entrar en el edificio. 
 
 ![BocCriptaExterior](https://github.com/user-attachments/assets/08d3fcb9-0a7f-4829-bffe-e4cf09eb1143)
-> Boceto del exterior de la cripta (Figura 13)
+> Boceto del exterior de la cripta (Figura 15)
 
 ![EntradaCripta](https://github.com/user-attachments/assets/65e94000-430a-4992-92a1-4e2e64e149c2)
-> Mapa final del exterior de la cripta (Figura 14)
+> Mapa final del exterior de la cripta (Figura 16)
 
 Dentro de la cripta se encuentran con que están en un laberinto lleno de trampas, que en función de qué trampa sea un ratón u otro podrá salvar al otro. 
 
@@ -209,25 +210,25 @@ Dentro de la cripta se encuentran con que están en un laberinto lleno de trampa
 Cuando lleguen al cazador les contará su historia, descubriendo así que fue traicionado por cierto habitante con alto nivel de influencia. Junto al cazador descubren una carta escrita por el padre de estos, en la que se menciona que estaban investigando a la alcaldesa. 
 
 ![Diseño Nivel](https://github.com/user-attachments/assets/e272fca9-3ee9-4948-ac0c-6621c2b2273b)
-> Diseño del nivel (Figura 15)
+> Diseño del nivel (Figura 17)
 
 ![MapaJuego](https://github.com/user-attachments/assets/aac329cb-9769-4f54-b171-2a5ac5ac28ed)
-> Parte del laberinto final durante el gameplay (Figura 16)
+> Parte del laberinto final durante el gameplay (Figura 18)
 
 ## Personajes 
 
 Los protagonistas, Sighttail y Scentpaw, controlados por el jugador: Sighttail lleva gafas y tiene las orejas grandes. Además, tiene el pelaje algo largo y la cola negra. Por otro lado, Scentpaw tiene un gorro de investigador y las orejas más pequeñas que su hermano. Su pelaje es corto y una cola del mismo color que su pelaje. 
 
 ![Ilustracion_sin_titulo](https://github.com/user-attachments/assets/6c88396c-3123-434f-b46f-3ab91ac08c39)
-> Diseño de Sighttail durante los diálogos (Figura 17)
+> Diseño de Sighttail durante los diálogos (Figura 19)
 
 ![Gorra](https://github.com/user-attachments/assets/ce87aced-3c45-4005-838d-2bcdff90a644)
-> Diseño de Scentpaw durante los diálogos (Figura 18)
+> Diseño de Scentpaw durante los diálogos (Figura 20)
 
 El cazador de la cripta: Este ratón es algo robusto. Es alto, pero lo suficientemente sigiloso como para pasar desapercibido. Viste ropa de caza y lleva un hacha. 
 
 ![fanta](https://github.com/user-attachments/assets/e974dc56-1a41-4a98-96f7-7311c4c5d7a9)
-> Diseño del personaje durante los diálogos (Figura 19)
+> Diseño del personaje durante los diálogos (Figura 21)
 
 Alcaldesa: Es nombrada en diversas ocasiones a lo largo del juego sin embargo, no aparece físicamente en él.
 
@@ -240,17 +241,17 @@ Los ítems presentes en el juego son claves para el desarrollo clave del juego.
 1. Flechas: una de las trampas que incluye el juego. Son lanzadas y dañan al jugador si lo dañan.
 
 ![Flechas_F3](https://github.com/user-attachments/assets/05dc7d7b-5431-4788-be02-8a8376af8fd2)
-> Sprite de las flechas (Figura 20)
+> Sprite de las flechas (Figura 22)
 
 2. Neblina tóxica: la otra trampa. Para que dañe al jugador, este tiene que estar 7 segundos en contacto con la neblina.
 
 ![Gas](https://github.com/user-attachments/assets/4b0be0ed-f8f6-4c71-aba9-c1e52146607f)
-> Sprite de la neblura tóxica (Figura 21)
+> Sprite de la neblura tóxica (Figura 23)
 
 3. Carta familiar: la carta que los padres de Sighttail y Scentpaw les dejan antes de morir. Contiene información relativa a lo que les pasó.  
 
 ![CARTA](https://github.com/user-attachments/assets/4816c66c-7384-490e-ba75-b04750bf7796)
-> Sprite carta familiar (Figura 22)
+> Sprite carta familiar (Figura 24)
 
 ## Sonido
 
@@ -277,7 +278,7 @@ Se cumple ya que se ha incluido el sonido y la imagen del meme. Después de habl
 
 El proyecto realizado no contiene ningún tipo de elemento creado por inteligencia artificial por lo que cumple con dicha insignia ya que las imagenes se han creado personalmente para la entrega y todos los orígenes de los sonidos están referenciados en el documento de texto.
 ![IMG_1293](https://github.com/user-attachments/assets/4c522609-3e06-44bd-ae7d-c6522d852ba9)
->Prueba de la creación de elementos propios (Figura 23)
+>Prueba de la creación de elementos propios (Figura 25)
 
 ### “Eso me suena”
 "El juego debe tener una referencia a un videojuego de nuestra infancia. Esta puede ser acústica, visual, gráfica, de un personaje, un texto, ¡lo que sea! La idea es que seamos capaces de recordar algo de otros videojuegos de cuando éramos pequeños y nos venga la nostalgia de aquella buena época".  
