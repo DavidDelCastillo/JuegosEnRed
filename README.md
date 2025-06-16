@@ -155,7 +155,7 @@ Se describen los botones a partir de los distintos estados:
 > Interfaz menú de pausa (Figura 8)
 
 3. Menú Créditos: botón para volver al menú de pausa.
-![Creditos](https://github.com/user-attachments/assets/65af7167-d319-4c62-a1d6-98b8419accf5)
+![CapCreditos](https://github.com/user-attachments/assets/82ad0b73-55c8-4972-a88e-fcb03ba31bfb)
 > Interfaz menú de créditos (Figura 9)
 
 4. Menú de controles:botón para volver a la pantalla anterior.
@@ -163,7 +163,7 @@ Se describen los botones a partir de los distintos estados:
 > Interfaz menú de controles (Figura 10)
 
 5. Dentro del juego: botón de pausa arriba a la izquierda.
-![dentroJuego](https://github.com/user-attachments/assets/2bec8536-7863-40c3-93aa-7cb8d41e3f24)
+![CapTuto](https://github.com/user-attachments/assets/7f3a21a2-9890-4095-92a5-e352c25017d2)
 > Interfaz dentro del juego (Figura 11)
 
 6. Pantalla de derrota: botón para volver al menú inicial.
@@ -178,6 +178,9 @@ Se describen los botones a partir de los distintos estados:
 >Interfaz pantalla de login (Figura 13)
 
 10. Pantalla de vistoria: se muestra al acabar el juego existosamente y te devuelve al menú principal.
+![CapFin](https://github.com/user-attachments/assets/4719c2fb-af35-4664-805a-ec30fe3e97ea)
+>Interfaz pantalla de victoria (Figura 14)
+
 
 
 
