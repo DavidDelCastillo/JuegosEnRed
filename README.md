@@ -143,6 +143,7 @@ Al haber dos personajes jugables cada uno se maneja con unas teclas completament
 7. Pantalla de derrota: pantalla que aparece cuando uno de los ratones muere. 
 
 8. Login: al inicio del juego, se ha añadidio como primera pantalla un registro e inicio de sesión para los usuarios.
+9. GameMode: pantalla donde te deja elegir entre jugar en local o en online.
 
 Se incluye a continuación una versión ilustrada de los estados, con las condiciones para pasar de unos a otros: 
 ![diagramaFase3](https://github.com/user-attachments/assets/d304d65c-c2e3-4551-981d-71b896181f5a)
