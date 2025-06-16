@@ -168,7 +168,7 @@ export default class TutorialScene extends Phaser.Scene {
             });
 
         //boton para abrir el chat
-        const chatButton = this.add.image(1.43*centerX, 0.6*centerY, 'chat').setScrollFactor(0).setScale(0.15)
+        const chatButton = this.add.image(1.5*centerX, 1.0*centerY, 'chat').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();

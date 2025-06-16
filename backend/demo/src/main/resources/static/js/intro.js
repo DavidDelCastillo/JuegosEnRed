@@ -57,7 +57,7 @@ class IntroScene extends Phaser.Scene{
         this.periodicoM = this.add.image(centerX, centerY, "periodicoM");
 
         //boton del chat
-        const chatButton = this.add.image(1.85*centerX, 1.8*centerY, 'chat').setScale(0.3)
+        const chatButton = this.add.image(1.5*centerX, 1.0*centerY, 'chat').setScale(0.3)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();
