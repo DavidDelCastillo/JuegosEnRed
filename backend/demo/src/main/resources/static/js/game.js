@@ -546,10 +546,6 @@ export default class GameScene extends Phaser.Scene {
         });
 
     }
-
-
-    //interacción cuadro chill
-
     //Confirma la interacción con el cuadro
 
     checkCuadroInteraction(playerKey) {
@@ -624,7 +620,7 @@ checkGasCollision(player, playerKey,myRole, roomId) {
         }
         this.sighttailInGas = false;
     }
-    if (myRole === 'roton2' && playerKey === 'Scentpaw') {
+    if (myRole === 'raton2' && playerKey === 'Scentpaw') {
         if (this.scentpawInGas) {
             this.scentpawGas += 100;
             if (this.gasPriVez) {
@@ -634,7 +630,7 @@ checkGasCollision(player, playerKey,myRole, roomId) {
             if (this.scentpawGas >= 7000) {//Si esta más tiempo del que debe se le quita una vida
                 //Eliminamos un simbolo de vida
                 this.socket.send("lifeDown:"+myRole+":"+roomId);
-                console.log("la vida a bajado");
+                console.log("VIDA MENOS RATON 2");
             }
         }
         else {//Si se va del gas reinicia el contador
