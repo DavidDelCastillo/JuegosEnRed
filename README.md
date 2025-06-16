@@ -180,8 +180,8 @@ Se describen los botones a partir de los distintos estados:
 10. Pantalla de vistoria: se muestra al acabar el juego existosamente y te devuelve al menú principal.
 ![CapFin](https://github.com/user-attachments/assets/4719c2fb-af35-4664-805a-ec30fe3e97ea)
 >Interfaz pantalla de victoria (Figura 14)
-
-
+## UML
+![UMLFASE3](https://github.com/user-attachments/assets/d1d44216-31ef-40a3-bf6a-561281159161)
 
 
 # DESARROLLO DEL JUEGO 
