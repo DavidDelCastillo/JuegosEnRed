@@ -163,7 +163,7 @@ Se describen los botones a partir de los distintos estados:
 > Interfaz menú de controles (Figura 10)
 
 5. Dentro del juego: botón de pausa arriba a la izquierda.
-![CapTuto](https://github.com/user-attachments/assets/7f3a21a2-9890-4095-92a5-e352c25017d2)
+![CapTuto](https://github.com/user-attachments/assets/649c53b6-b9c3-42de-8a4b-b7effc7f2681)
 > Interfaz dentro del juego (Figura 11)
 
 6. Pantalla de derrota: botón para volver al menú inicial.
@@ -214,8 +214,7 @@ Cuando lleguen al cazador les contará su historia, descubriendo así que fue tr
 
 ![Diseño Nivel](https://github.com/user-attachments/assets/e272fca9-3ee9-4948-ac0c-6621c2b2273b)
 > Diseño del nivel (Figura 17)
-
-![MapaJuego](https://github.com/user-attachments/assets/aac329cb-9769-4f54-b171-2a5ac5ac28ed)
+![CapJuego](https://github.com/user-attachments/assets/27c65709-7989-4c39-8be6-a34ae61009c9)
 > Parte del laberinto final durante el gameplay (Figura 18)
 
 ## Personajes 
