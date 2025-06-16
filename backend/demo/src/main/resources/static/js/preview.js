@@ -92,7 +92,7 @@ class PreviewScene extends Phaser.Scene {
         });
 
         //boton del chat
-        const chatButton = this.add.image(1.5*centerX, 1.0*centerY, 'chat').setScale(0.3)
+        const chatButton = this.add.image(1.9*centerX, 0.2*centerY, 'chat').setScale(0.3)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();

@@ -284,28 +284,28 @@ export default class GameScene extends Phaser.Scene {
 
 
         //Añadimos los iconos de las muertes de Scentpaw
-        this.muerteSc1 = this.add.image(1.35 * centerX, 0.56 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSc2 = this.add.image(1.4 * centerX, 0.56 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSc3 = this.add.image(1.45 * centerX, 0.56 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc1 = this.add.image(1.35 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc2 = this.add.image(1.4 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc3 = this.add.image(1.45 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
         //Las metemos en el array de muertes de Scentpaw
         this.muertesSc.push(this.muerteSc1, this.muerteSc2, this.muerteSc3);
         //Añadimos los iconos de las muertes de Signtail
-        this.muerteSi1 = this.add.image(1.35 * centerX, 0.66 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSi2 = this.add.image(1.4 * centerX, 0.66 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSi3 = this.add.image(1.45 * centerX, 0.66 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi1 = this.add.image(1.35 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi2 = this.add.image(1.4 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi3 = this.add.image(1.45 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
         //Las metemos en el array de muertes de Signtail
         this.muertesSi.push(this.muerteSi1, this.muerteSi2, this.muerteSi3);
 
         //Añadimos los iconos de las vidas de Scentpaw
-        this.vidaSc1 = this.add.image(1.35 * centerX, 0.56 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
-        this.vidaSc2 = this.add.image(1.4 * centerX, 0.56 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
-        this.vidaSc3 = this.add.image(1.45 * centerX, 0.56 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
+        this.vidaSc1 = this.add.image(1.27 * centerX, 0.6 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
+        this.vidaSc2 = this.add.image(1.32 * centerX, 0.6 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
+        this.vidaSc3 = this.add.image(1.37 * centerX, 0.6 * centerY, 'vidaSc').setScrollFactor(0).setScale(0.11);
         //Las metemos en el array de vidas de Scentpaw
         this.vidasSc.push(this.vidaSc1, this.vidaSc2, this.vidaSc3);
         //Añadimos los iconos de las vidas de Signtail
-        this.vidaSi1 = this.add.image(1.35 * centerX, 0.66 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
-        this.vidaSi2 = this.add.image(1.4 * centerX, 0.66 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
-        this.vidaSi3 = this.add.image(1.45 * centerX, 0.66 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
+        this.vidaSi1 = this.add.image(1.27 * centerX, 0.7 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
+        this.vidaSi2 = this.add.image(1.32 * centerX, 0.7 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
+        this.vidaSi3 = this.add.image(1.37 * centerX, 0.7 * centerY, 'vidaSi').setScrollFactor(0).setScale(0.11);
         //Las metemos en el array de vidas de Signtail
         this.vidasSi.push(this.vidaSi1, this.vidaSi2, this.vidaSi3);
 
@@ -327,7 +327,7 @@ export default class GameScene extends Phaser.Scene {
         });
 
         //Añadimos el botón de pausa
-        const pausa = this.add.image(1.5 * centerX, 0.55 * centerY, 'pause').setScrollFactor(0).setScale(0.09)
+        const pausa = this.add.image(1.45 * centerX, 0.58 * centerY, 'pause').setScrollFactor(0).setScale(0.12)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.pause(); // Pausa la escena actual
@@ -335,7 +335,7 @@ export default class GameScene extends Phaser.Scene {
             });
 
         //boton para abrir el chat
-        const chatButton = this.add.image(1.5*centerX, 1.0*centerY, 'chat').setScrollFactor(0).setScale(0.15)
+        const chatButton = this.add.image(1.45*centerX, 0.7*centerY, 'chat').setScrollFactor(0).setScale(0.12)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();

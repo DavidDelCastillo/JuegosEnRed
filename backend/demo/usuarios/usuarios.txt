@@ -1,9 +1,12 @@
 aa,aa,0
 ab,aa,0
 opo,99,0
-kitsune,hola,0
+kitsune,hola,1
 david,123,0
 david2,123,0
 paco,333,0
 papa,999,0
 uu,uu,0
+ktsune,hola,1
+kisune,hola,1
+k,h,0
