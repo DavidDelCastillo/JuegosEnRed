@@ -300,9 +300,7 @@ export default class TutorialScene extends Phaser.Scene {
         const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
         const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
         const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
-
-        this.controlsManager.handlePlayerMovement(player, controls, playerName);
-
+        let lastControl =null;
         this.controlsManager.handlePlayerMovement(player, controls, playerName);
 
         if (controls.keys.up.isDown) {
