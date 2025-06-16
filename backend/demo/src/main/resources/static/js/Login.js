@@ -97,6 +97,21 @@ class LoginScene extends Phaser.Scene {
         // Eliminar inputs cuando la escena se cierre
         this.events.on('shutdown', this.removeInputs, this);
         this.events.on('destroy', this.removeInputs, this);
+
+        window.addEventListener('beforeunload', () => {
+            const user = localStorage.getItem('chatUsername');
+            if (user) {
+                const data = new Blob(
+                    [JSON.stringify({ id: user })],
+                    { type: 'application/json' }
+                );
+
+                navigator.sendBeacon('http://localhost:8080/usuario/cerrarSesion', data);
+
+                localStorage.removeItem('chatUsername');
+                localStorage.removeItem('chatId');
+            }
+        });
     }
 
     removeInputs() {
