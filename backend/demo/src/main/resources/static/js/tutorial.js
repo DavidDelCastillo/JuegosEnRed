@@ -172,7 +172,7 @@ export default class TutorialScene extends Phaser.Scene {
 
 
         // Pausa
-        const pausa = this.add.image(0.55 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
+        const pausa = this.add.image(1.45 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.pause();
@@ -180,7 +180,7 @@ export default class TutorialScene extends Phaser.Scene {
             });
 
         //boton para abrir el chat
-        const chatButton = this.add.image(1.43*centerX, 0.6*centerY, 'chat').setScrollFactor(0).setScale(0.15)
+        const chatButton = this.add.image(1.45*centerX, 0.75*centerY, 'chat').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () =>{
                 $('#chat-container').toggle();

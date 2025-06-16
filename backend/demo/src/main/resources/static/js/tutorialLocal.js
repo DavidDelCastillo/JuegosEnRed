@@ -160,11 +160,11 @@ export default class TutorialLoScene extends Phaser.Scene {
 
 
         // Pausa
-        const pausa = this.add.image(0.55 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
+        const pausa = this.add.image(1.45 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.pause();
-                this.scene.launch('PauseLoScene', { callingScene: this.scene.key });
+                this.scene.launch('PauseScene', { callingScene: this.scene.key });
             });
 
         //icono de los poderes
