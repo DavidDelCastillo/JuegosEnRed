@@ -376,9 +376,11 @@ Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego
 - Se mantiene actualizada la cantidad de vidas de cada jugador.
 - Controla cuándo un jugador entra o sale de la partida.
 
-
 ## Diagrama de clases
 
 ![Diagrama_de_clases drawio](https://github.com/user-attachments/assets/11cbc67c-bd7f-4e90-8d53-fa3a7b879501)
 > Diagrama de clases actualizado (Figura 26)
+
+## Vídeo
+https://youtu.be/SQcGJatBL6U
 
