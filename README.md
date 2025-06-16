@@ -13,11 +13,10 @@ GDD-MISTERY MICE
 Descarga el archivo .zip
 
 Para poder compilar y ejecutar correctamente el proyecto, es necesario tener instaladas las siguientes dependencias en el sistema:
-Java 8 (o una versión superior)
-Java JDK 17 (o una versión superior)
+Java 8 (o una versión superior), Java JDK 17 (o una versión superior)
 
 Además, en caso de querer ejecutar o modificar el proyecto desde un entorno como Visual Studio Code, se deben instalar las siguientes extensiones:
-Spring Boot Tools, Spring Boot Dashboard, Spring Boot Extension Pack, Spring Initializer Java Support
+Spring Boot Tools, Spring Boot Dashboard, Spring Boot Extension Pack, Spring Initializer Java Support.
 
 Extrae el archivo .zip en una carpeta de tu equipo.
 Localiza el archivo .jar.
@@ -363,7 +362,7 @@ El juego mezcla la estética pixel art in-game y mantiene una estetica 2D conven
 # FUNCIONES EN RED
 - Creación de un usuario y contraseña: Si el nombre de usuario ya está registrado, no permitirá crear otro con el mismo nombre. Además, se evitará que un usuario inicie sesión si ya está conectado con la misma cuenta, mostrando un mensaje de advertencia.
 - Persistencia de la información de los usuarios: Los usuarios registrados y sus estados de sesión se guardarán en un archivo .txt, lo que permitirá recuperar estos datos en futuras sesiones.
-- Envio de mensajes gracias a un chat.
+- Envío de mensajes gracias a un chat.
 
 # WEBSOCKETS
 Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego: 
