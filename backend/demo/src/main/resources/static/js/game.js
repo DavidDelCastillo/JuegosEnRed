@@ -59,6 +59,22 @@ export default class GameScene extends Phaser.Scene {
         this.controlsManager = new ControlsManager();
         this.controlsManager.initializeControls(this);
 
+        const myRole = this.registry.get("rol");
+        const roomId = this.registry.get("room");
+
+        // Crear y guardar socket en registry si no existe (evitar crear múltiples)
+        if (!this.registry.get("socket")) {
+            const socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+            this.registry.set("socket", socket);
+
+            // Cuando se abra la conexión, unirse a la cola de matchmaking
+            socket.addEventListener('open', () => {
+                socket.send("joinQueue");
+            });
+        }
+
+        this.socket = this.registry.get("socket");
+
         //Detiene la música de la pantalla anterior
         const backgroundMusic1 = this.registry.get("musicaFondo");
         if (backgroundMusic1) {
@@ -248,8 +264,8 @@ export default class GameScene extends Phaser.Scene {
         this.time.addEvent({
             delay: 100,
             callback: () => {
-                this.checkGasCollision(this.sighttail, 'Sighttail');
-                this.checkGasCollision(this.scentpaw, 'Scentpaw');
+                this.checkGasCollision(this.sighttail, 'Sighttail',myRole, roomId);
+                this.checkGasCollision(this.scentpaw, 'Scentpaw',myRole, roomId);
             },
             loop: true
         });
@@ -373,27 +389,26 @@ export default class GameScene extends Phaser.Scene {
         //colisiones entre jugadores y cazador
         this.physics.add.collider(this.sighttail, this.cazador, () => {
             console.log('colision con cazador: sighttail');
-            this.checkCazadorCollision('Sighttail');
+            this.checkCazadorCollision(myRole,roomId);
 
         });
         this.physics.add.collider(this.scentpaw, this.cazador, () => {
             console.log('colision con cazador: scentpaw');
-            this.checkCazadorCollision('Scentpaw');
+            this.checkCazadorCollision(myRole, roomId);
         });
 
         //Colisiones entre jugadores y la carta
         this.physics.add.collider(this.sighttail, this.carta, () => {
-            this.launchDialogueScene(5);
+            this.socket.send("newDialoge:"+5+":"+roomId);
             this.time.delayedCall(500, () => {
-                this.scene.stop("GameScene");
-                this.scene.start("EndScene");
+                console.log("PREPARADO PARA CAMBIAR ESCENA");
+                this.socket.send("nextScene:EndScene:"+roomId);
             });
         })
         this.physics.add.collider(this.scentpaw, this.carta, () => {
-            this.launchDialogueScene(5);
+            this.socket.send("newDialoge:"+5+":"+roomId);
             this.time.delayedCall(500, () => {
-                this.scene.stop("GameScene");
-                this.scene.start("EndScene");
+                this.socket.send("nextScene:EndScene:"+roomId);;
             });
         })
 
@@ -410,6 +425,122 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.centerOn(centerjX, centerjY);
 
         this.launchDialogueScene(0);
+
+        // Escuchar mensajes WebSocket
+        this.socket.addEventListener('message', (event) => {
+            const msg = event.data;
+            //Cambio de escena
+            if (msg.startsWith("nextScene:")) {
+                const nextScene = msg.split(":")[1];
+                const msgRoomId = msg.split(":")[2];
+
+                if(msgRoomId==roomId){
+                    this.scene.stop("GameScene");
+                    this.scene.start(nextScene);
+                }
+            }
+            else if(msg.startsWith("newDialoge:")){
+                const int =msg.split(":")[1];
+                const msgRoomId = msg.split(":")[2];
+                if(msgRoomId==roomId){
+                    this.launchDialogueScene(parseInt(int));
+                }
+            }
+            else if (msg.startsWith("move:")) {// Elimina el prefijo
+                const parts = msg.split(":");
+                const room = parts[1];
+                const raton = parts[2];
+                const direction = parts[3];
+
+                if (room !== roomId) return;
+
+                const player = raton === "Sighttail" ? this.sighttail : this.scentpaw;
+                const speed = 2;
+
+                switch (direction) {
+                    case "up": player.y -= speed; player.play(`${raton}-walk-up`, true); break;
+                    case "down": player.y += speed; player.play(`${raton}-walk-down`, true); break;
+                    case "left": player.x -= speed; player.play(`${raton}-walk-left`, true); break;
+                    case "right": player.x += speed; player.play(`${raton}-walk-right`, true); break;
+                }
+            }else if(msg.startsWith("abilityOn:")){
+                const msgRoomId =msg.split(":")[1];
+                const tipo = msg.split(":")[2];
+                if(msgRoomId==roomId){
+                    if(tipo == "gas"){
+
+                        this.olfatoDisp = false;
+                        this.gas.forEach(gas => {
+                            gas.setVisible(true);
+                        });
+
+                        this.capaO.setVisible(true);
+
+                        this.time.delayedCall(this.durOlfato, () => {
+                            this.gas.forEach(gas => {
+                                gas.setVisible(false);
+                            });
+                        });
+
+                        this.time.delayedCall(this.cargaOlfato, () => {
+                            this.olfatoDisp = true;
+                            this.capaO.setVisible(false);
+                            console.log("olfato disponible");
+                        });
+                    }else if (tipo == "flechas"){
+                        this.vistaDisp = false;
+                        this.flechas.forEach(flecha => {
+                            flecha.setVisible(true);
+                        });
+
+                        this.capaV.setVisible(true);
+
+                        //logica del timer 
+                        this.time.delayedCall(this.durVista, () => {
+                            this.flechas.forEach(flecha => {
+                                flecha.setVisible(false);
+                            });
+
+                        });
+
+                        this.time.delayedCall(this.cargaVista, () => {
+                            this.vistaDisp = true;
+                            this.capaV.setVisible(false);
+                            console.log("vista disponible");
+                        });
+                    }
+                    
+                }
+            }else if(msg.startsWith("lifeDown:")){
+                const rol = msg.split(":")[1];
+                const msgRoomId =msg.split(":")[2];
+                if(msgRoomId == roomId){
+                    if(rol === 'raton2'){
+                        this.vidasSc[this.vidasP2].setVisible(false);
+                        //Mostramos un simbolo de muerte
+                        this.muertesSc[this.vidasP2].setVisible(true);
+                        //Le quitamos una vida
+                        this.vidasP2 -= 1;
+                        this.scentpawGas = 0;
+
+                        this.sound.play("Daño");
+                    }else{
+                        //Eliminamos un simbolo de vida
+                        this.vidasSi[this.vidasP1].setVisible(false);
+                        //Mostramos ek simbolo de muerte
+                        this.muertesSi[this.vidasP1].setVisible(true);
+                        //Le quitamos una vida
+                        this.vidasP1 -= 1;
+                        this.sighttailGas = 0;
+                        console.log("Una vida menos");
+                        console.log(this.sighttailGas);
+                        console.log(this.sighttailInGas);
+
+                        this.sound.play("Daño");
+                    }
+                }
+            }
+        });
 
     }
 
@@ -459,46 +590,30 @@ updateTimer() {
 }
 
 //Comprueba si alguno de los jugadores ha chocado co él para iniciar su dialogo
-checkCazadorCollision(playerKey) {
+checkCazadorCollision(myRole, roomId) {
 
-    if (playerKey === 'Sighttail') {
+    if (myRole == "raton1") {
         if (this.hablarCazador) {
-            this.launchDialogueScene(3);//Dialogo cazador
+            this.socket.send("newDialoge:"+3+":"+roomId);
             this.hablarCazador = false; // Desactiva para no repetir el diálogo
-            this.carta.setVisible(true);
-        }
-    } else if (playerKey === 'Scentpaw') {
-        if (this.hablarCazador) {
-            this.launchDialogueScene(3);//Dialogo cazador
-            this.hablarCazador = false;
             this.carta.setVisible(true);
         }
     }
 }
 
 //Función que comprueba la colisión de este con el gas
-checkGasCollision(player, playerKey) {
+checkGasCollision(player, playerKey,myRole, roomId) {
 
-    if (playerKey === 'Sighttail') {
+    if (myRole === 'raton1' && playerKey === 'Sighttail') {
         if (this.sighttailInGas) {
             this.sighttailGas += 100;
             if (this.gasPriVez) {//Si es la primera vez que lo toca salta dialogo
-                this.launchDialogueScene(2);
+                this.socket.send("newDialoge:"+2+":"+roomId);
                 this.gasPriVez = !this.gasPriVez;
             }
             if (this.sighttailGas >= 7000) {//Si esta más tiempo del que debe se le quita una vida
-                //Eliminamos un simbolo de vida
-                this.vidasSi[this.vidasP1].setVisible(false);
-                //Mostramos ek simbolo de muerte
-                this.muertesSi[this.vidasP1].setVisible(true);
-                //Le quitamos una vida
-                this.vidasP1 -= 1;
-                this.sighttailGas = 0;
-                console.log("Una vida menos");
-                console.log(this.sighttailGas);
-                console.log(this.sighttailInGas);
-
-                this.sound.play("Daño");
+                this.socket.send("lifeDown:"+myRole+":"+roomId);
+                console.log("la vida a bajado");
             }
         }
         else { //Si se va del gas reinicia el contador
@@ -506,23 +621,17 @@ checkGasCollision(player, playerKey) {
         }
         this.sighttailInGas = false;
     }
-    if (playerKey === 'Scentpaw') {
+    if (myRole === 'roton2' && playerKey === 'Scentpaw') {
         if (this.scentpawInGas) {
             this.scentpawGas += 100;
             if (this.gasPriVez) {
-                this.launchDialogueScene(2);//Si es la primera vez que lo toca salta dialogo
+                this.socket.send("newDialoge:"+2+":"+roomId);
                 this.gasPriVez = !this.gasPriVez;
             }
             if (this.scentpawGas >= 7000) {//Si esta más tiempo del que debe se le quita una vida
                 //Eliminamos un simbolo de vida
-                this.vidasSc[this.vidasP2].setVisible(false);
-                //Mostramos un simbolo de muerte
-                this.muertesSc[this.vidasP2].setVisible(true);
-                //Le quitamos una vida
-                this.vidasP2 -= 1;
-                this.scentpawGas = 0;
-
-                this.sound.play("Daño");
+                this.socket.send("lifeDown:"+myRole+":"+roomId);
+                console.log("la vida a bajado");
             }
         }
         else {//Si se va del gas reinicia el contador
@@ -537,43 +646,30 @@ checkGasCollision(player, playerKey) {
         this.sound.play("Derrota");
 
         //Cambiamos de escena
-        this.scene.stop('GameScene');
-        this.scene.start('LoseScene');
+        this.socket.send("nextScene:LoseScene:"+roomId);
     }
 
 
 }
 
 //Función que maneja la colisión de los persoanjes con las flechas
-handleFlechaCollision(playerkey, flecha) {
+handleFlechaCollision(playerkey,myRole, flecha, roomId) {
     if (flecha.yaColisiono) {//Si choca sale de la función
         return;
     }
     flecha.yaColisiono = true; //Al chocar le quita una vida
-    console.log(`${playerkey} ha sido alcanzado por una flecha`);
+    console.log(`${myRole} ha sido alcanzado por una flecha`);
     //Eliminamos un simbolo de vida de los personajes
-    if (playerkey == 'Sighttail') {
+    if (myRole == 'raton1' && layerkey == 'Sighttail') {
         //Eliminamos un simbolo de vida
-        this.vidasSi[this.vidasP1].setVisible(false);
-        //Mostramos un simbolo de muerte
-        this.muertesSi[this.vidasP1].setVisible(true);
-        //Le quitamos una vida
-        this.vidasP1 -= 1;
-
-        this.sound.play("Daño");
+        this.socket.send("lifeDown:"+myRole+":"+roomId);
     }
-    if (playerkey == 'Scentpaw') {
+    if (myRole == 'raton2' && playerkey == 'Scentpaw') {
         //Eliminamos un simbolo de vida
-        this.vidasSc[this.vidasP2].setVisible(false);
-        //Mostramos un simbolo de muerte
-        this.muertesSc[this.vidasP2].setVisible(true);
-        //Le quitamos una vida
-        this.vidasP2 -= 1;
-
-        this.sound.play("Daño");
+        this.socket.send("lifeDown:"+myRole+":"+roomId);
     }
     if (this.flechasPriVez) {//Si es la primera vez que choca salta el dialogo
-        this.launchDialogueScene(1);
+        this.socket.send("newDialoge:"+1+":"+roomId);
         this.flechasPriVez = !this.flechasPriVez;
     }
     flecha.setVelocity(0);
@@ -592,9 +688,7 @@ handleFlechaCollision(playerkey, flecha) {
 
         this.sound.play("Derrota");
 
-        //Cambiamos de escena
-        this.scene.stop('GameScene');
-        this.scene.start('LoseScene');
+        this.socket.send("nextScene:LoseScene:"+roomId);
     }
 }
 
@@ -610,11 +704,11 @@ createFlecha(startX, startY, delay, rangoX) {
     this.flechas.push(flecha); //Añadimos la flecha al array
 
     this.physics.add.collider(flecha, this.sighttail, () => {
-        this.handleFlechaCollision('Sighttail', flecha);
+        this.handleFlechaCollision('Sighttail',myRole, flecha, roomId);
     });
 
     this.physics.add.collider(flecha, this.scentpaw, () => {
-        this.handleFlechaCollision('Scentpaw', flecha);
+        this.handleFlechaCollision('Scentpaw',myRole, flecha, roomId);
     });
 
 }
@@ -723,19 +817,24 @@ createAnimations(playerkey) {
 
 //Comprueba la dirección de los personajes y los estados de los gases y las flechas
 update() {
+    const myRole = this.registry.get("rol");
+    const roomId = this.registry.get("room");
 
-    this.controlsManager.handlePlayerMovement(
-        this.sighttail,
-        this.controlsManager.controls1,
-        'Sighttail',
-    );
+    const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
+    const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
+    const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
 
-    this.controlsManager.handlePlayerMovement(
-        this.scentpaw,
-        this.controlsManager.controls2,
-        'Scentpaw',
-    );
+    this.controlsManager.handlePlayerMovement(player, controls, playerName);
 
+    if (controls.keys.up.isDown) {
+        this.socket.send("move:"+roomId+":"+playerName+":up");
+    } else if (controls.keys.down.isDown) {
+        this.socket.send("move:"+roomId+":"+playerName+":down");
+    } else if (controls.keys.left.isDown) {
+        this.socket.send("move:"+roomId+":"+playerName+":left");
+    } else if (controls.keys.right.isDown) {
+        this.socket.send("move:"+roomId+":"+playerName+":right");
+    }
     //Movimiento de las flechas
     this.flechas.forEach((flecha) => {
         if (flecha.x >= flecha.rangoX.maxX) {
@@ -753,56 +852,19 @@ update() {
     });
 
     //Si la habilidad de la vista está activa se muestran las flechas
-    if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown) {
+    if (this.vistaDisp && this.controlsManager.controls1.keys.power.isDown && myRole == "raton1") {
         console.log("Jugador 1 usó poder");
-        this.vistaDisp = false;
-        this.flechas.forEach(flecha => {
-            flecha.setVisible(true);
-        });
-
-        this.capaV.setVisible(true);
-
-        //logica del timer 
-        this.time.delayedCall(this.durVista, () => {
-            this.flechas.forEach(flecha => {
-                flecha.setVisible(false);
-            });
-
-        });
-
-        this.time.delayedCall(this.cargaVista, () => {
-            this.vistaDisp = true;
-            this.capaV.setVisible(false);
-            console.log("vista disponible");
-        });
+        this.socket.send("abilityOn:"+roomId+":flechas");
+            
     }
-
     //Si la habilidad de olfato está activa se muestran los gases
-    if (this.olfatoDisp && this.controlsManager.controls2.keys.power.isDown) {
+    if (this.olfatoDisp && this.controlsManager.controls2.keys.power.isDown && myRole == "raton2") {
         console.log("Jugador 2 usó poder");
-        this.olfatoDisp = false;
-        this.gas.forEach(gas => {
-            gas.setVisible(true);
-        });
-
-        this.capaO.setVisible(true);
-
-        this.time.delayedCall(this.durOlfato, () => {
-            this.gas.forEach(gas => {
-                gas.setVisible(false);
-            });
-        });
-
-        this.time.delayedCall(this.cargaOlfato, () => {
-            this.olfatoDisp = true;
-            this.capaO.setVisible(false);
-            console.log("olfato disponible");
-        });
-
+        this.socket.send("abilityOn:"+roomId+":gas");
     }
 
-    this.checkCazadorCollision(this.sighttail, 'Sighttail');
-    this.checkCazadorCollision(this.scentpaw, 'Scentpaw');
+    this.checkCazadorCollision(myRole, roomId);
+    this.checkCazadorCollision(myRole, roomId);
     // Centrar cámara entre los dos jugadores
     const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
     const centerjY = (this.sighttail.y + this.scentpaw.y) / 2;

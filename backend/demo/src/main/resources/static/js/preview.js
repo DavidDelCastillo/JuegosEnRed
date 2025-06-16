@@ -71,7 +71,7 @@ class PreviewScene extends Phaser.Scene {
             cont++;
 
             if (cont > 1) {
-                this.socket.send("nextScene:TutorialScene:"+roomId);
+                this.socket.send("nextScene:GameScene:"+roomId);
             } else {
                 if (resetTimer) {
                     this.time.removeEvent(resetTimer);
@@ -89,7 +89,7 @@ class PreviewScene extends Phaser.Scene {
 
         if (myRole === "raton1") {
             this.time.delayedCall(readingTime, () => {
-                this.socket.send("nextScene:TutorialScene:"+roomId);
+                this.socket.send("nextScene:GameScene:"+roomId);
             });
         }
 
