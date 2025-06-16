@@ -284,15 +284,15 @@ export default class GameScene extends Phaser.Scene {
 
 
         //Añadimos los iconos de las muertes de Scentpaw
-        this.muerteSc1 = this.add.image(1.35 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSc2 = this.add.image(1.4 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSc3 = this.add.image(1.45 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc1 = this.add.image(1.27 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc2 = this.add.image(1.32 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSc3 = this.add.image(1.37 * centerX, 0.6 * centerY, 'muerteSc').setScrollFactor(0).setScale(0.11).setVisible(false);
         //Las metemos en el array de muertes de Scentpaw
         this.muertesSc.push(this.muerteSc1, this.muerteSc2, this.muerteSc3);
         //Añadimos los iconos de las muertes de Signtail
-        this.muerteSi1 = this.add.image(1.35 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSi2 = this.add.image(1.4 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
-        this.muerteSi3 = this.add.image(1.45 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi1 = this.add.image(1.27 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi2 = this.add.image(1.32 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
+        this.muerteSi3 = this.add.image(1.37 * centerX, 0.7 * centerY, 'muerteSi').setScrollFactor(0).setScale(0.11).setVisible(false);
         //Las metemos en el array de muertes de Signtail
         this.muertesSi.push(this.muerteSi1, this.muerteSi2, this.muerteSi3);
 
