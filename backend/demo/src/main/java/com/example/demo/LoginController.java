@@ -4,32 +4,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Map;
+
 @RestController
 @RequestMapping("/usuario")
-public class LoginController{
-    /*private final UserRepository userRepository;
+public class LoginController {
 
-    public LoginController(UserRepository userRepository){
-        this.userRepository=userRepository;
-    }*/
-
-    //Registrar Usuario
+    // Registrar Usuario
     @PostMapping("/registro")
-    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario){
-        try{
+    public ResponseEntity<?> registrarUsuario(@RequestBody Usuario usuario) {
+        try {
             String nombreUsuario = usuario.getId();
             String password = usuario.getPassword();
-            File archivoGeneral =new File ("usuarios/usuarios.txt");
+            File archivoGeneral = new File("usuarios/usuarios.txt");
             File carpeta = new File("usuarios");
 
-            if(!carpeta.exists()) carpeta.mkdirs(); //Sino existe la carpeta la crea
-            
+            if (!carpeta.exists()) carpeta.mkdirs();
+
             // Verificar si el usuario ya existe
             if (archivoGeneral.exists()) {
                 try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral))) {
@@ -38,86 +30,169 @@ public class LoginController{
                         String[] partes = linea.split(",");
                         if (partes.length >= 1 && partes[0].equals(nombreUsuario)) {
                             return ResponseEntity.status(HttpStatus.CONFLICT)
-                                .body(Map.of("success", false, "message", "Este nombre ya existe"));
+                                    .body(Map.of("success", false, "message", "Este nombre ya existe"));
                         }
                     }
                 }
             }
-            //Guarda la información en uno general
-            try(FileWriter write =new FileWriter(archivoGeneral, true)){
-                write.write(nombreUsuario+","+password+",0\n");
+
+            try (FileWriter write = new FileWriter(archivoGeneral, true)) {
+                write.write(nombreUsuario + "," + password + ",1\n");
             }
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body(Map.of("success", true, "message", "Usuario registrado correctamente"));
+                    .body(Map.of("success", true, "message", "Usuario registrado correctamente"));
 
-        } catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "message", "Error al registrar usuario"));
+                    .body(Map.of("success", false, "message", "Error al registrar usuario"));
         }
     }
 
-    // Carga de usuario
+    // Login de usuario
     @PostMapping("/login")
     public ResponseEntity<?> loginUsuario(@RequestBody Usuario usuario) {
         String nombreUsuario = usuario.getId();
         String password = usuario.getPassword();
         File archivoGeneral = new File("usuarios/usuarios.txt");
-        File carpeta = new File("usuarios");
-
-        if(!carpeta.exists()) carpeta.mkdirs(); //Sino existe la carpeta la crea
 
         if (!archivoGeneral.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("success", false, "message", "No hay usuarios registrados"));
         }
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                String[] partes = linea.split(",");
-                if (partes.length >= 2 && partes[0].equals(nombreUsuario)) {
-                    if (partes[1].equals(password)) {
-                        return ResponseEntity.ok()
-                                .body(Map.of("success", true, "message", "Inicio de sesión exitoso"));
+        try {
+            File tempFile = new File("usuarios/temp.txt");
+            boolean usuarioEncontrado = false;
+            boolean loginCorrecto = false;
+            boolean sesionActiva = false;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral));
+                 PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
+
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 3 && partes[0].equals(nombreUsuario)) {
+                        usuarioEncontrado = true;
+
+                        if (partes[1].equals(password)) {
+                            loginCorrecto = true;
+
+                            if (partes[2].equals("1")) {
+                                sesionActiva = true;
+                                writer.println(linea);
+                            } else {
+                                writer.println(partes[0] + "," + partes[1] + ",1");
+                            }
+                        } else {
+                            writer.println(linea);
+                        }
                     } else {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                .body(Map.of("success", false, "message", "Contraseña incorrecta"));
+                        writer.println(linea);
                     }
                 }
             }
+
+            if (!usuarioEncontrado) {
+                tempFile.delete();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("success", false, "message", "Usuario no encontrado"));
+            }
+
+            if (!loginCorrecto) {
+                tempFile.delete();
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("success", false, "message", "Contraseña incorrecta"));
+            }
+
+            if (sesionActiva) {
+                tempFile.delete();
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body(Map.of("success", false, "message", "Este usuario ya tiene una sesión iniciada"));
+            }
+
+            if (!archivoGeneral.delete() || !tempFile.renameTo(archivoGeneral)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("success", false, "message", "Error al actualizar archivo de usuarios"));
+            }
+
+            return ResponseEntity.ok()
+                    .body(Map.of("success", true, "message", "Inicio de sesión exitoso"));
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("success", false, "message", "Error al leer usuarios"));
         }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("success", false, "message", "Usuario no encontrado"));
     }
 
-    //Obtener usuario por id
-    /*@GetMapping("/{id}")
-    public ResponseEntity<?> obtenerUsuario(@PathVariable Integer id) {
-        Optional<Usuario> usuario = userRepository.findById(id);
-        if (usuario.isPresent()) {
-            return ResponseEntity.ok(usuario.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("success", false, "message", "Usuario no encontrado"));
-        }
-    }*/
-
-    //Eliminar usuario
+    // Eliminar usuario
     @PostMapping("/eliminar")
-    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario){
-
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario) {
         String nombreUsuario = usuario.getId();
         String password = usuario.getPassword();
         File archivoGeneral = new File("usuarios/usuarios.txt");
 
         if (!archivoGeneral.exists()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("success", false, "message", "No hay usuarios registrados"));
+                    .body(Map.of("success", false, "message", "No hay usuarios registrados"));
+        }
+
+        try {
+            File tempFile = new File("usuarios/temp.txt");
+            boolean usuarioEncontrado = false;
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(archivoGeneral));
+                 PrintWriter writer = new PrintWriter(new FileWriter(tempFile))) {
+
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 2 && partes[0].equals(nombreUsuario) && partes[1].equals(password)) {
+                        usuarioEncontrado = true;
+                        continue;
+                    }
+                    writer.println(linea);
+                }
+            }
+
+            if (!usuarioEncontrado) {
+                tempFile.delete();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("success", false, "message", "Usuario no encontrado o contraseña incorrecta"));
+            }
+
+            if (!archivoGeneral.delete() || !tempFile.renameTo(archivoGeneral)) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(Map.of("success", false, "message", "Error al actualizar archivo de usuarios"));
+            }
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Usuario eliminado correctamente"));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("success", false, "message", "Error al eliminar usuario"));
+        }
+    }
+
+    // Cerrar sesión (pone estado a 0)
+    @PostMapping("/cerrarSesion")
+    public ResponseEntity<?> cerrarSesion(@RequestBody(required = false) Map<String, Object> payload) {
+        if (payload == null || !payload.containsKey("id")) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "Falta el ID del usuario"
+            ));
+        }
+
+        String nombreUsuario = payload.get("id").toString();
+        File archivoGeneral = new File("usuarios/usuarios.txt");
+
+        if (!archivoGeneral.exists()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                "success", false,
+                "message", "No hay usuarios registrados"
+            ));
         }
 
         try {
@@ -131,33 +206,40 @@ public class LoginController{
                 String linea;
                 while ((linea = reader.readLine()) != null) {
                     String[] partes = linea.split(",");
-                    if (partes.length >= 2 && partes[0].equals(nombreUsuario) && partes[1].equals(password)) {
-                        usuarioEncontrado = true; // No lo escribimos en el archivo nuevo
-                        continue;
+                    if (partes.length >= 3 && partes[0].equals(nombreUsuario)) {
+                        usuarioEncontrado = true;
+                        writer.println(partes[0] + "," + partes[1] + ",0");  // Cierra sesión
+                    } else {
+                        writer.println(linea);
                     }
-                    writer.println(linea); // Mantener otros usuarios
                 }
             }
 
             if (!usuarioEncontrado) {
-                tempFile.delete(); // Limpieza
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("success", false, "message", "Usuario no encontrado o contraseña incorrecta"));
+                tempFile.delete();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                    "success", false,
+                    "message", "Usuario no encontrado"
+                ));
             }
 
-            // Reemplaza el archivo original
             if (!archivoGeneral.delete() || !tempFile.renameTo(archivoGeneral)) {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("success", false, "message", "Error al actualizar archivo de usuarios"));
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "success", false,
+                    "message", "Error al actualizar archivo de usuarios"
+                ));
             }
 
-            return ResponseEntity.ok(Map.of("success", true, "message", "Usuario eliminado correctamente"));
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Sesión cerrada correctamente"
+            ));
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("success", false, "message", "Error al eliminar usuario"));
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "message", "Error al cerrar sesión"
+            ));
         }
     }
-
-
 }
