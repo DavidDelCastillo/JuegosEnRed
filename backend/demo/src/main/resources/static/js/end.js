@@ -24,5 +24,12 @@ class EndScene extends Phaser.Scene{
             color: '#42240e',
             align: 'center'
         });
+
+        //Botón para volver al menú inicial
+        const volver = this.add.image(1 * centerX, 1.4 * centerY, "botonS").setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop("LoseScene");
+                this.scene.start("IntroScene");
+            });
     }
 }
