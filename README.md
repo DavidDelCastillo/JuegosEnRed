@@ -9,6 +9,30 @@ GDD-MISTERY MICE
 
 -María de Andrés Jarandilla - m.deandres.2021@alumnos.urjc.es - MariaDeAndres
 
+# INSTRUCCIONES DE INSTALACIÓN Y EJECUCIÓN
+Descarga el archivo .zip
+
+Para poder compilar y ejecutar correctamente el proyecto, es necesario tener instaladas las siguientes dependencias en el sistema:
+Java 8 (o una versión superior)
+Java JDK 17 (o una versión superior)
+
+Además, en caso de querer ejecutar o modificar el proyecto desde un entorno como Visual Studio Code, se deben instalar las siguientes extensiones:
+Spring Boot Tools
+Spring Boot Dashboard
+Spring Boot Extension Pack
+Spring Initializer Java Support
+
+Extrae el archivo .zip en una carpeta de tu equipo.
+Localiza el archivo .jar.
+Copia la ruta de la carpeta desde el explorador de archivos.
+Abre Símbolo del sistema (cmd).
+Escribe cd seguido de un espacio y pega la ruta copiada.
+Ejecuta el siguiente comando para iniciar el servidor: java -jar "nombre_del_archivo".jar
+
+Para acceder al juego desde otro dispositivo o navegador:
+En la misma consola, ejecuta: ipconfig
+Copia la dirección IPv4 de tu dispositivo.
+Abre un navegador web y accede a la siguiente URL, sustituyendo TU_IP por la dirección copiada. (Ejemplo: http://192.168.1.24:8080)
 
 # INTRODUCCIÓN
 
@@ -297,11 +321,6 @@ Para implementar esta insignia se ha decidido cambiar el texto del periodico del
 
 El juego mezcla la estética pixel art in-game y mantiene una estetica 2D convencional para las interfaces y closeups de los personajes, por lo que estaría cumpliendo con el requisito.
 
-## Fase 3
-
-*imagen del diagrama de clases
-
-Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Spring Boot Dashboard", "Spring Boot Extension Pack" y "Spring Initializer Java Support". A la hora de iniciar el juego debemos correr el código desde el Spring Boot Dashboard, dándole al botón "Play" en "demo" y, en nuestro navegador, acceder a la URL localhost:8080.
 
 ## Integrantes y sus contribuciones
 
@@ -313,13 +332,17 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
   
 3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase, creado los diagramas del flujo uy UML, así como las modificaciones de la memoria y parte de la programación.
 
+4. Durante la fase 4 se ha encargado de modificar el aspecto visual y la creación de los diagramas de flujo del UML.
+
 ### David del Castillo Enríquez
 
 1. Cuando se empezó la primera fase se encargó de buscar un estilo visual para el juego además de la persceptiva del gameplay para adecuarse a la visión del equipo.
 
 2. En esta segunda fase se ha encargado de realizar los tilemaps de los dos escenarios principales, los sprites de las trampas, ilustrar los menús de las interfaces, crear los logos de las habilidades, además de programar las interfaces de créditos y controles.
    
-3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel, así como la corrección del chat y la implementación del login.
+3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel, así como la programación del chat y  del login.
+
+4. En la fase 4 ha sido el principal encargado de la implementación de Websocket.
 
 ### Daniel Duque Rodríguez
 
@@ -327,7 +350,9 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. Durante la segunda fase se ha encargado de  la búsqueda de sonidos y música, guión y realización de algunos pequeños assets sueltos, así como de ciertas partes de la programación.
    
-3.  Durante la tercera fase se ha encargado de  la búsqueda de sonidos y música y parte de la programación del login y chat.
+3.  Durante la tercera fase se ha encargado de la búsqueda de sonidos y música y la programación del login y chat.
+
+4.  Durante la fase 4 se ha encargado de ciertas partes de la programación y la memoria.
 
 ### Laura Facenda Estrella (hasta la fase 3)
 
@@ -335,5 +360,19 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
   
 2. En la segunda fase ha diseño de tipografía propia así como la mayor parte de programación.
    
-3. En la tercera fase ha creado el servidor, implementado el parte del chat, como parte de la programación.
+3. En la tercera fase ha creado el servidor y parte del chat.
+
+# FUNCIONES EN RED
+- Creación de un usuario y contraseña: Si el nombre de usuario ya está registrado, no permitirá crear otro con el mismo nombre. Además, se evitará que un usuario inicie sesión si ya está conectado con la misma cuenta, mostrando un mensaje de advertencia.
+- Persistencia de la información de los usuarios: Los usuarios registrados y sus estados de sesión se guardarán en un archivo .txt, lo que permitirá recuperar estos datos en futuras sesiones.
+- Envio de mensajes gracias a un chat.
+
+# WEBSOCKETS
+Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego: 
+- Permite sincronizar a todos los jugadores para cambiar simultáneamente de escena cuando se alcanza un determinado evento o condición en la partida.
+- Se gestionan los diálogos, permitiendo que todos los jugadores avancen de forma sincronizada en las conversaciones.
+- Los movimientos de los personajes se transmiten a través del WebSocket.
+- Cuando un jugador activa una habilidad, al otro jugador también le aparece el uso de la habilidad de su compañero.
+- Se mantiene actualizada la cantidad de vidas de cada jugador.
+- Controla cuándo un jugador entra o sale de la partida.
 
