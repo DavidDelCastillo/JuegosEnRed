@@ -13,8 +13,7 @@ GDD-MISTERY MICE
 Descarga el archivo .zip
 
 Para poder compilar y ejecutar correctamente el proyecto, es necesario tener instaladas las siguientes dependencias en el sistema:
-Java 8 (o una versión superior)
-Java JDK 17 (o una versión superior)
+Java 8 (o una versión superior), Java JDK 17 (o una versión superior)
 
 Además, en caso de querer ejecutar o modificar el proyecto desde un entorno como Visual Studio Code, se deben instalar las siguientes extensiones:
 Spring Boot Tools, Spring Boot Dashboard, Spring Boot Extension Pack, Spring Initializer Java Support
