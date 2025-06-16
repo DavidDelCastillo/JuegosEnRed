@@ -149,6 +149,7 @@ Se incluye a continuación una versión ilustrada de los estados, con las condic
 ![diagramaFase3](https://github.com/user-attachments/assets/d304d65c-c2e3-4551-981d-71b896181f5a)
 > Mapa de estados actualizado (Figura 4)
 
+
 ## Interfaces 
 
 La idea es que las interfaces tengan la temática visual de investigación, ya sea con una fuente que se asemeje a la de las máquinas de escribir o por medio de iconos y paleta de colores en sintonía con el resto del juego. 
@@ -372,4 +373,10 @@ Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego
 - Cuando un jugador activa una habilidad, al otro jugador también le aparece el uso de la habilidad de su compañero.
 - Se mantiene actualizada la cantidad de vidas de cada jugador.
 - Controla cuándo un jugador entra o sale de la partida.
+
+
+## Diagrama de clases
+
+![Diagrama_de_clases drawio](https://github.com/user-attachments/assets/11cbc67c-bd7f-4e90-8d53-fa3a7b879501)
+> Diagrama de clases actualizado (Figura 26)
 
