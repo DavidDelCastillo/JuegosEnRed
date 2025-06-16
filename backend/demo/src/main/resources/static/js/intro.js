@@ -50,13 +50,12 @@ class IntroScene extends Phaser.Scene {
         this.add.image(0.65 * centerX, 1.2 * centerY, "libro");
         this.add.image(centerX, centerY, "periodicoM");
 
-        // Botón de chat
-        this.add.image(1.85 * centerX, 1.8 * centerY, 'chat')
-            .setScale(0.3)
+        //boton del chat
+        const chatButton = this.add.image(1.9*centerX, 0.2*centerY, 'chat').setScale(0.3)
             .setInteractive()
-            .on('pointerdown', () => {
+            .on('pointerdown', () =>{
                 $('#chat-container').toggle();
-            });
+        });
 
         // Botón "Empezar"
         this.add.text(0.72 * centerX, 0.65 * centerY, 'Empezar', {

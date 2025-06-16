@@ -93,13 +93,13 @@ class PreviewScene extends Phaser.Scene {
             });
         }
 
-        // Botón de chat
-        this.add.image(1.9 * centerX, 0.2 * centerY, 'chat')
-            .setScale(0.3)
+        //boton del chat
+        const chatButton = this.add.image(1.9*centerX, 0.2*centerY, 'chat').setScale(0.3)
             .setInteractive()
-            .on('pointerdown', () => {
-                document.getElementById('chat-container')?.classList.toggle('hidden');
-            });
+            .on('pointerdown', () =>{
+                $('#chat-container').toggle();
+        });
+
 
         // Escuchar mensajes WebSocket
         this.socket.addEventListener('message', (event) => {
