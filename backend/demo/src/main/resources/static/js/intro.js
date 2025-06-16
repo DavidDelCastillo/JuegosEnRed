@@ -107,18 +107,31 @@ class IntroScene extends Phaser.Scene {
             align: 'center'
         }).setInteractive()
             .on('pointerdown', () => {
-                this.sound.play("boton");
+            this.sound.play("boton");
 
-                if (window.chatManager) {
-                    window.chatManager.disconnectUser();
-                }
+            if (window.chatManager) {
+                window.chatManager.disconnectUser();
+            }
 
-                localStorage.removeItem('chatUserId');
-                localStorage.removeItem('chatId');
+            const username = localStorage.getItem('chatUsername');
+            if (username) {
+                fetch('http://localhost:8080/usuario/cerrarSesion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: username })
+                })
+            .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error cerrando sesión:', error));
+            }
 
-                this.scene.stop("IntroScene");
-                this.scene.start("LoginScene");
-            });
+            localStorage.removeItem('chatUserId');
+            localStorage.removeItem('chatId');
+
+            this.scene.stop("IntroScene");
+            this.scene.start("LoginScene");
+        });
+
 
         // Eventos del WebSocket
         this.socket.onmessage = (event) => {
