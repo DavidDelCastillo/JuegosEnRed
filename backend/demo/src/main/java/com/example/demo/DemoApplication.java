@@ -10,7 +10,6 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 
 @SpringBootApplication
 @EnableWebSocket
-@EnableScheduling	
 public class DemoApplication implements WebSocketConfigurer {
 	
 
