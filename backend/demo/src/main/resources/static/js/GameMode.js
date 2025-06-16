@@ -47,5 +47,20 @@ class GameModeScene extends Phaser.Scene{
             this.scene.stop("GameModeScene");
             this.scene.start("LoginScene");    
         });
+
+        window.addEventListener('beforeunload', () => {
+            const user = localStorage.getItem('chatUsername');
+            if (user) {
+                const data = new Blob(
+                    [JSON.stringify({ id: user })],
+                    { type: 'application/json' }
+                );
+
+                navigator.sendBeacon('http://localhost:8080/usuario/cerrarSesion', data);
+
+                localStorage.removeItem('chatUsername');
+                localStorage.removeItem('chatId');
+            }
+        });
     }
 }
