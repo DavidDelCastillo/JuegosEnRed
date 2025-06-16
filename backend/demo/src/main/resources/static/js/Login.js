@@ -78,25 +78,27 @@ class LoginScene extends Phaser.Scene {
                 this.eliminarUsuario(this.nombre.value, this.contra.value);
             });
 
-        const volverB = this.add.image(1.8 * centerX, 0.25 * centerY, "volverB")
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.sound.play("boton");
-                if (this.callingScene) {
-                    this.scene.stop("IntroLoScene");
-                    this.returnToCallingScene();
-                } else {
-                    this.scene.start("GameModeScene");
-                }
-            });
-        volverB.setScale(0.4);
-
         // guardar escena de llamada
         this.callingScene = this.scene.settings.data?.callingScene || null;
 
         // Eliminar inputs cuando la escena se cierre
         this.events.on('shutdown', this.removeInputs, this);
         this.events.on('destroy', this.removeInputs, this);
+
+        window.addEventListener('beforeunload', () => {
+            const user = localStorage.getItem('chatUsername');
+            if (user) {
+                const data = new Blob(
+                    [JSON.stringify({ id: user })],
+                    { type: 'application/json' }
+                );
+
+                navigator.sendBeacon('http://localhost:8080/usuario/cerrarSesion', data);
+
+                localStorage.removeItem('chatUsername');
+                localStorage.removeItem('chatId');
+            }
+        });
     }
 
     removeInputs() {
