@@ -130,19 +130,19 @@ public class Matchmaking extends TextWebSocketHandler {
         if (payload.equals("leaveRoom")) {
             Room room = findRoomForPlayer(session);
             if (room != null) {
-                // Avisamos a todos los jugadores que deben salir
-                for (WebSocketSession s : room.getPlayers()) {
+            room.getPlayers().remove(session);
+            // Notificamos al otro jugador que vuelva al menú
+            for (WebSocketSession s : room.getPlayers()) {
+                if (s.isOpen()) {
                     try {
-                        if (s.isOpen()) {
-                            s.sendMessage(new TextMessage("leaveRoom"));
-                        }
+                        s.sendMessage(new TextMessage("forceReturnToIntro"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-                rooms.remove(room); // Eliminamos la sala
+                rooms.remove(room);
             }
-            waitingPlayers.remove(session); // Por si estaba esperando
+        }
             return;
 }
     }

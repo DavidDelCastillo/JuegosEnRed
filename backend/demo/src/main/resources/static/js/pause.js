@@ -46,14 +46,6 @@ class PauseScene extends Phaser.Scene {
                 this.scene.stop("PauseScene");//Detiene la escena
                 this.returnToCallingScene();//Llama a un método para volver a la escena anterior
             });
-        
-        //Botón para volver al menú inicial
-        const salir = this.add.image(0.4 * centerX, 0.9 * centerY, "salir").setInteractive()
-            .on('pointerdown', () => {
-                if (this.socket && this.socket.connected) {
-                    this.socket.send("LeaveRoom");
-                }
-            });
 
         //Botón que te envía a la escena de créditos
         const credits = this.add.image(0.6 * centerX, 1.5 * centerY, "credits").setInteractive()
@@ -76,6 +68,12 @@ class PauseScene extends Phaser.Scene {
 
         this.socket.onmessage = (event) => {
             const msg = event.data;
+
+            if (msg.startsWith("forceReturnToIntro")) {// Detenemos todas las escenas relevantes y volvemos al menú
+                this.scene.stop("PauseScene");
+                this.scene.stop("GameLoScene"); // o la escena de juego activa
+                this.scene.start("IntroScene");
+            }
 
             if (msg.startsWith("leaveRoom")) {
                 console.log("Volviendo a INTRO");
