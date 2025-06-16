@@ -7,6 +7,7 @@ class EndScene extends Phaser.Scene{
 
         //Cargamos el periódico como imagen de fondo
         this.load.image("periodicoF", 'assets/periodico.png');
+        this.load.image("botonS", 'assets/VolverMenu.png');
     }
 
     create(){
