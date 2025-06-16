@@ -122,8 +122,10 @@ Al haber dos personajes jugables cada uno se maneja con unas teclas completament
    
 7. Pantalla de derrota: pantalla que aparece cuando uno de los ratones muere. 
 
+8. Login: al inicio del juego, se ha añadidio como primera pantalla un registro e inicio de sesión para los usuarios.
+
 Se incluye a continuación una versión ilustrada de los estados, con las condiciones para pasar de unos a otros: 
-![Diagrama Estados F3](https://github.com/user-attachments/assets/56f79e4d-f124-4dd7-b1c4-94cc12347979)
+![diagramaFase3](https://github.com/user-attachments/assets/d304d65c-c2e3-4551-981d-71b896181f5a)
 > Mapa de estados actualizado (Figura 4)
 
 ## Interfaces 
@@ -134,13 +136,15 @@ Un estilo minimalista, con flechas y poco texto sería lo más adecuado para est
 
 Se describen los botones a partir de los distintos estados: 
 
-1. Menú principal: botones de jugar, salir, controles y créditos.
+1. Menú principal: botones de jugar, salir, controles, créditos y cerrar sesión.
 
 ![MenuRef](https://github.com/user-attachments/assets/9273f467-b8b6-4315-9459-172a74988b4b)
 > Boceto del menú principal (Figura 5)
 
-![MenuInicio](https://github.com/user-attachments/assets/f2144c8d-5edb-4009-b24d-237aeae38b17)
+![CapIntro](https://github.com/user-attachments/assets/01260df3-a6d1-4d93-83b8-6f50da85a394)
 > Interfaz menú de inicio (Figura 6)
+
+
 
 2. Menú de pausa: reanudar (volver a la pantalla anterior), volver al menú y créditos.
 
@@ -151,7 +155,7 @@ Se describen los botones a partir de los distintos estados:
 > Interfaz menú de pausa (Figura 8)
 
 3. Menú Créditos: botón para volver al menú de pausa.
-![Creditos](https://github.com/user-attachments/assets/65af7167-d319-4c62-a1d6-98b8419accf5)
+![CapCreditos](https://github.com/user-attachments/assets/82ad0b73-55c8-4972-a88e-fcb03ba31bfb)
 > Interfaz menú de créditos (Figura 9)
 
 4. Menú de controles:botón para volver a la pantalla anterior.
@@ -159,12 +163,25 @@ Se describen los botones a partir de los distintos estados:
 > Interfaz menú de controles (Figura 10)
 
 5. Dentro del juego: botón de pausa arriba a la izquierda.
-![CapTuto](https://github.com/user-attachments/assets/45934c7d-4168-4ccd-ac3d-4f602729525c)
+![CapTuto](https://github.com/user-attachments/assets/649c53b6-b9c3-42de-8a4b-b7effc7f2681)
 > Interfaz dentro del juego (Figura 11)
 
 6. Pantalla de derrota: botón para volver al menú inicial.
 ![Derrota](https://github.com/user-attachments/assets/e3207e45-6568-4664-a3ea-5a5832ad971c)
 >Interfaz pantalla de derrota (Figura 12)
+
+8. Botón de chat: botón que hay en todas las escenas (a excepción del login) para abrir el chat.
+
+
+9. Pantalla de login: pantalla de acceso por registro o inicio de sesión con usuario y contraseña.
+![CapLogin](https://github.com/user-attachments/assets/551e3044-0655-421c-8874-c0e64002dba6)
+>Interfaz pantalla de login (Figura 13)
+
+10. Pantalla de vistoria: se muestra al acabar el juego existosamente y te devuelve al menú principal.
+![CapFin](https://github.com/user-attachments/assets/4719c2fb-af35-4664-805a-ec30fe3e97ea)
+>Interfaz pantalla de victoria (Figura 14)
+
+
 
 
 # DESARROLLO DEL JUEGO 
@@ -182,10 +199,10 @@ Este cazador murió tras la traición de otro habitante y por ello se encuentra 
 En este nivel, los jugadores llegan a la puerta de la cripta, una zona con muy poca iluminación, y se encuentran con la puerta cerrada. Mediante la vista de Sighttail y el olfato de Scentpaw encontrarán un agujero en la cripta para poder entrar en el edificio. 
 
 ![BocCriptaExterior](https://github.com/user-attachments/assets/08d3fcb9-0a7f-4829-bffe-e4cf09eb1143)
-> Boceto del exterior de la cripta (Figura 13)
+> Boceto del exterior de la cripta (Figura 15)
 
 ![EntradaCripta](https://github.com/user-attachments/assets/65e94000-430a-4992-92a1-4e2e64e149c2)
-> Mapa final del exterior de la cripta (Figura 14)
+> Mapa final del exterior de la cripta (Figura 16)
 
 Dentro de la cripta se encuentran con que están en un laberinto lleno de trampas, que en función de qué trampa sea un ratón u otro podrá salvar al otro. 
 
@@ -196,26 +213,24 @@ Dentro de la cripta se encuentran con que están en un laberinto lleno de trampa
 Cuando lleguen al cazador les contará su historia, descubriendo así que fue traicionado por cierto habitante con alto nivel de influencia. Junto al cazador descubren una carta escrita por el padre de estos, en la que se menciona que estaban investigando a la alcaldesa. 
 
 ![Diseño Nivel](https://github.com/user-attachments/assets/e272fca9-3ee9-4948-ac0c-6621c2b2273b)
-> Diseño del nivel (Figura 15)
-
-![CapJuego](https://github.com/user-attachments/assets/66b2442b-e3b3-4996-951a-14295ff1a97e)
-
-> Parte del laberinto final durante el gameplay (Figura 16)
+> Diseño del nivel (Figura 17)
+![CapJuego](https://github.com/user-attachments/assets/27c65709-7989-4c39-8be6-a34ae61009c9)
+> Parte del laberinto final durante el gameplay (Figura 18)
 
 ## Personajes 
 
 Los protagonistas, Sighttail y Scentpaw, controlados por el jugador: Sighttail lleva gafas y tiene las orejas grandes. Además, tiene el pelaje algo largo y la cola negra. Por otro lado, Scentpaw tiene un gorro de investigador y las orejas más pequeñas que su hermano. Su pelaje es corto y una cola del mismo color que su pelaje. 
 
 ![Ilustracion_sin_titulo](https://github.com/user-attachments/assets/6c88396c-3123-434f-b46f-3ab91ac08c39)
-> Diseño de Sighttail durante los diálogos (Figura 17)
+> Diseño de Sighttail durante los diálogos (Figura 19)
 
 ![Gorra](https://github.com/user-attachments/assets/ce87aced-3c45-4005-838d-2bcdff90a644)
-> Diseño de Scentpaw durante los diálogos (Figura 18)
+> Diseño de Scentpaw durante los diálogos (Figura 20)
 
 El cazador de la cripta: Este ratón es algo robusto. Es alto, pero lo suficientemente sigiloso como para pasar desapercibido. Viste ropa de caza y lleva un hacha. 
 
 ![fanta](https://github.com/user-attachments/assets/e974dc56-1a41-4a98-96f7-7311c4c5d7a9)
-> Diseño del personaje durante los diálogos (Figura 19)
+> Diseño del personaje durante los diálogos (Figura 21)
 
 Alcaldesa: Es nombrada en diversas ocasiones a lo largo del juego sin embargo, no aparece físicamente en él.
 
@@ -228,17 +243,17 @@ Los ítems presentes en el juego son claves para el desarrollo clave del juego.
 1. Flechas: una de las trampas que incluye el juego. Son lanzadas y dañan al jugador si lo dañan.
 
 ![Flechas_F3](https://github.com/user-attachments/assets/05dc7d7b-5431-4788-be02-8a8376af8fd2)
-> Sprite de las flechas (Figura 20)
+> Sprite de las flechas (Figura 22)
 
 2. Neblina tóxica: la otra trampa. Para que dañe al jugador, este tiene que estar 7 segundos en contacto con la neblina.
 
 ![Gas](https://github.com/user-attachments/assets/4b0be0ed-f8f6-4c71-aba9-c1e52146607f)
-> Sprite de la neblura tóxica (Figura 21)
+> Sprite de la neblura tóxica (Figura 23)
 
 3. Carta familiar: la carta que los padres de Sighttail y Scentpaw les dejan antes de morir. Contiene información relativa a lo que les pasó.  
 
 ![CARTA](https://github.com/user-attachments/assets/4816c66c-7384-490e-ba75-b04750bf7796)
-> Sprite carta familiar (Figura 22)
+> Sprite carta familiar (Figura 24)
 
 ## Sonido
 
@@ -265,7 +280,7 @@ Se cumple ya que se ha incluido el sonido y la imagen del meme. Después de habl
 
 El proyecto realizado no contiene ningún tipo de elemento creado por inteligencia artificial por lo que cumple con dicha insignia ya que las imagenes se han creado personalmente para la entrega y todos los orígenes de los sonidos están referenciados en el documento de texto.
 ![IMG_1293](https://github.com/user-attachments/assets/4c522609-3e06-44bd-ae7d-c6522d852ba9)
->Prueba de la creación de elementos propios (Figura 23)
+>Prueba de la creación de elementos propios (Figura 25)
 
 ### “Eso me suena”
 "El juego debe tener una referencia a un videojuego de nuestra infancia. Esta puede ser acústica, visual, gráfica, de un personaje, un texto, ¡lo que sea! La idea es que seamos capaces de recordar algo de otros videojuegos de cuando éramos pequeños y nos venga la nostalgia de aquella buena época".  
@@ -296,7 +311,7 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. Durante la segunda fase se ha encargado de diseñar y crear los sprite sheet de los personajes, además de los poderes (las huellas y el humo que se ve) y el periodico. Además de esto ha programado código de gestión de pausa y del fondo.
   
-3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase y cierta parte de la programación.
+3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase, creado los diagramas del flujo uy UML, así como las modificaciones de la memoria y parte de la programación.
 
 ### David del Castillo Enríquez
 
@@ -304,7 +319,7 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. En esta segunda fase se ha encargado de realizar los tilemaps de los dos escenarios principales, los sprites de las trampas, ilustrar los menús de las interfaces, crear los logos de las habilidades, además de programar las interfaces de créditos y controles.
    
-3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel.
+3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel, así como la corrección del chat y la implementación del login.
 
 ### Daniel Duque Rodríguez
 
@@ -312,14 +327,13 @@ Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Sprin
 
 2. Durante la segunda fase se ha encargado de  la búsqueda de sonidos y música, guión y realización de algunos pequeños assets sueltos, así como de ciertas partes de la programación.
    
-3.  Durante la tercera fase se ha encargado de  la búsqueda de sonidos y música y ciertas partes de la programación
+3.  Durante la tercera fase se ha encargado de  la búsqueda de sonidos y música y parte de la programación del login y chat.
 
-### Laura Facenda Estrella
+### Laura Facenda Estrella (hasta la fase 3)
 
 1. Durante la primera parte todo el diseño del juego, los niveles, la historia las mecánicas, etc.
   
 2. En la segunda fase ha diseño de tipografía propia así como la mayor parte de programación.
    
-3. En la tercera fase ha creado el servidor, implementado el chat, como gran parte de la programación.
+3. En la tercera fase ha creado el servidor, implementado el parte del chat, como parte de la programación.
 
-A falta de contenido por añadir se podrían modificar los roles.
