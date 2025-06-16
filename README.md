@@ -281,6 +281,12 @@ Para implementar esta insignia se ha decidido cambiar el texto del periodico del
 
 El juego mezcla la estética pixel art in-game y mantiene una estetica 2D convencional para las interfaces y closeups de los personajes, por lo que estaría cumpliendo con el requisito.
 
+## Fase 3
+
+*imagen del diagrama de clases
+
+Para poder ejecutar el .jar se ha tenido que intalar "Spring Boot Tools", "Spring Boot Dashboard", "Spring Boot Extension Pack" y "Spring Initializer Java Support". A la hora de iniciar el juego debemos correr el código desde el Spring Boot Dashboard, dándole al botón "Play" en "demo" y, en nuestro navegador, acceder a la URL localhost:8080.
+
 ## Integrantes y sus contribuciones
 
 ### María de Andrés Jarandilla
