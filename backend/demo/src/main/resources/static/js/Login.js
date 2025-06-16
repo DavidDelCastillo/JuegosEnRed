@@ -134,6 +134,7 @@ class LoginScene extends Phaser.Scene {
             .then(data => {
                 if (data.success) {
                     localStorage.setItem('chatId', user);
+                    localStorage.setItem('chatUsername', user);
                     fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(user), {
                         method: "POST"
                     })
@@ -170,6 +171,7 @@ class LoginScene extends Phaser.Scene {
                 const data = await response.json().catch(() => ({}));
                 if (response.ok && data.success) {
                     localStorage.setItem('chatId', nombre);
+                    localStorage.setItem('chatUsername', nombre);
                     fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(nombre), {
                         method: "POST"
                     })
