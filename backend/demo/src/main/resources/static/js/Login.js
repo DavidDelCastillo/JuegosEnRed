@@ -78,17 +78,19 @@ class LoginScene extends Phaser.Scene {
                 this.eliminarUsuario(this.nombre.value, this.contra.value);
             });
 
-        .setInteractive()Add commentMore actions
-        .on('pointerdown', () => {
-            this.sound.play("boton");
-            if (this.callingScene) {
-                this.scene.stop("IntroLoScene");
-                this.returnToCallingScene();
-            } else {
-                this.scene.start("GameModeScene");
-            }
-        });
-        volverB.setScale(0.4);        
+        // Botón para volver a la escena anterior
+        const volverB = this.add.image(1.8*centerX,0.25*centerY, "volverB")
+        .setInteractive()
+        .on('pointerdown', ()=>{
+                this.sound.play("boton");
+                if (this.callingScene) {
+                    this.scene.stop("IntroLoScene");
+                    this.returnToCallingScene();
+                } else {
+                    this.scene.start("GameModeScene");
+                }
+            });
+        volverB.setScale(0.4);     
 
         // guardar escena de llamada
         this.callingScene = this.scene.settings.data?.callingScene || null;
