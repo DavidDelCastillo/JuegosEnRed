@@ -210,11 +210,8 @@ Se describen los botones a partir de los distintos estados:
 
 # DESARROLLO DEL JUEGO 
 
-## Niveles 
 
-La idea original era hacer tres niveles sin embargo, se deicio reducirlo a un solo nivel. 
-
-### Nivel 1. El Laberinto del Cazador Oculto. 
+## Nivel 1. El Laberinto del Cazador Oculto. 
 
 El fantasma de un cazador se encuentra en una vieja cripta cercana a la casa de la familia Arat y los hermanos deciden empezar a cazar fantasmas por ahí. Dicha cripta se encuentra dentro de un cementerio abandonado lleno de vegetación por la falta de cuidado.
 
@@ -319,13 +316,6 @@ El juego tambien posee sonidos cuando los personajes reciben daño y mueren, ade
 
 4.  Durante la fase 4 se ha encargado de ciertas partes de la programación y la memoria.
 
-<!--### Laura Facenda Estrella (hasta la fase 3)
-
-1. Durante la primera parte todo el diseño del juego, los niveles, la historia las mecánicas, etc.
-  
-2. En la segunda fase ha diseño de tipografía propia así como la mayor parte de programación.
-   
-3. En la tercera fase ha creado el servidor y parte del chat.-->
 
 # FUNCIONES EN RED
 - Creación de un usuario y contraseña: Si el nombre de usuario ya está registrado, no permitirá crear otro con el mismo nombre. Además, se evitará que un usuario inicie sesión si ya está conectado con la misma cuenta, mostrando un mensaje de advertencia.
