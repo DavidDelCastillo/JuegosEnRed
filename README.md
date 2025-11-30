@@ -60,6 +60,11 @@ La plataforma elegida para el juego es PC.
 
 Nuestro videojuego busca atraer a aquel público interesado en las experiencias de misterio e investigación con toques sobrenaturales, similares a series como “Scooby-Doo” o juegos como “Luigi's Mansion”.  Las personas que decidan jugar a nuestro juego no necesitan tener mucha experiencia con los videojuegos lo que nos amplia el público objetivo buscado. 
 
+## marketing
+La estratégia de marketingque se empleará, al tratarse de un videojuego multijugador, enviar claves a creadores pequeños de contenido para hacer publicidad del juego en reels o tiktoks. Esta estrategia es muy usada en juegos cooperativos de este estilo, ofreciendo un tipo de publicidad facil de consumir por el público.
+
+El videojuego será pay to play contando con un solo pago para poder jugarlo.
+
 ## Jugabilidad 
 
 Como se ha mencionado anteriormente cada ratón tiene una habilidad única permitiendo al primer ratón ver huellas o rastros con su magnífica visión nocturna, mientras que el compañero tendrá la posibilidad de olfatear el olor que dejan los fantasmas usando su increíble olfato.  La cooperación dentro del juego será muy importante a la hora de recopilar pruebas y resolver distintos acertijos. 
