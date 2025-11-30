@@ -76,19 +76,6 @@ class CreditScene extends Phaser.Scene {
 
         })
 
-        const f = this.add.text(1.38 * centerX, 1.25 * centerY, '(Fase 1 y 2)', {
-            font: '35px mousy',
-            color: '#42240e',
-            align: 'center'
-
-        })
-
-        const lau = this.add.text(1.38 * centerX, 1.35 * centerY, 'Laura Facenda Estrella', {
-            font: '35px mousy',
-            color: '#42240e',
-            align: 'center'
-
-        })
 
         const son= this.add.text(0.75*centerX,0.95*centerY, 'Sfx y guion', {
             font: '65px mousy',
@@ -98,27 +85,6 @@ class CreditScene extends Phaser.Scene {
         })
 
         const dan = this.add.text(0.77 * centerX, 1.15 * centerY, 'Daniel Duque Rodríguez', {
-            font: '35px mousy',
-            color: '#42240e',
-            align: 'center'
-
-        })
-
-        const gam= this.add.text(0.77*centerX,1.35*centerY, 'Game Design', {
-            font: '65px mousy',
-            color: '#42240e',
-            align: 'center'
-
-        })
-
-        const f2=this.add.text(0.77*centerX,1.5*centerY, '(Fase 1 y 2)', {
-            font: '35px mousy',
-            color: '#42240e',
-            align: 'center'
-
-        })
-
-        const lau2=this.add.text(0.77*centerX,1.6*centerY, 'Laura Facenda Estrella', {
             font: '35px mousy',
             color: '#42240e',
             align: 'center'
