@@ -202,6 +202,7 @@ export default class GameLoScene extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.setZoom(2);
 
+
         // Configurar colisiones en el mapa
         layer.setCollision([1, 7]);
 
@@ -211,11 +212,15 @@ export default class GameLoScene extends Phaser.Scene {
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
+        this.sighttail.setCollideWorldBounds(true);
+
 
         this.scentpaw = this.physics.add.sprite(3.3 * centerX, 8 * centerY, 'Scentpaw')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
+        this.scentpaw.setCollideWorldBounds(true);
+
 
         this.cazador = this.physics.add.sprite(3.2 * centerX, 4.5 * centerY, 'Cazador')
             .setScale(2)
@@ -714,6 +719,21 @@ createAnimations(playerkey) {
     });
 }
 
+clampToCamera(player) {
+    const cam = this.cameras.main;
+
+    const halfW = player.displayWidth * 0.5;
+    const halfH = player.displayHeight * 0.5;
+
+    const left   = cam.worldView.x + halfW;
+    const right  = cam.worldView.right - halfW;
+    const top    = cam.worldView.y + halfH;
+    const bottom = cam.worldView.bottom - halfH;
+
+    player.x = Phaser.Math.Clamp(player.x, left, right);
+    player.y = Phaser.Math.Clamp(player.y, top, bottom);
+}
+
 //Comprueba la dirección de los personajes y los estados de los gases y las flechas
 update() {
 
@@ -728,6 +748,10 @@ update() {
         this.controlsManagerLocal.controls2,
         'Scentpaw',
     );
+
+    this.clampToCamera(this.sighttail);
+    this.clampToCamera(this.scentpaw);
+
 
     //Movimiento de las flechas
     this.flechas.forEach((flecha) => {
@@ -797,9 +821,10 @@ update() {
     this.checkCazadorCollision(this.sighttail, 'Sighttail');
     this.checkCazadorCollision(this.scentpaw, 'Scentpaw');
     // Centrar cámara entre los dos jugadores
-    const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
-    const centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
-    this.cameras.main.centerOn(centerjX, centerjY);
+    this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
+    this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
+    this.cameras.main.centerOn(this.centerjX, this.centerjY);
+
 }
 
 
