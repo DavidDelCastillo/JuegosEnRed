@@ -89,11 +89,17 @@ export default class TutorialLoScene extends Phaser.Scene {
             .setScale(2)
             .setSize(40, 30)
             .setOffset(12, 20);
+       
+        this.sighttail.setCollideWorldBounds(true);
+        this.scentpaw.setCollideWorldBounds(true);
+            
 
         //Colocamos a los personajes en el escenario
         this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
         this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
         this.cameras.main.centerOn(this.centerjX, this.centerjY);
+
+
 
         // Animaciones
         this.createAnimations('Sighttail');
@@ -301,6 +307,22 @@ export default class TutorialLoScene extends Phaser.Scene {
         });
     }
 
+    clampToCamera(player) {
+        const cam = this.cameras.main;
+
+        const halfW = player.displayWidth * 0.5;
+        const halfH = player.displayHeight * 0.5;
+
+        const left   = cam.worldView.x + halfW;
+        const right  = cam.worldView.right - halfW;
+        const top    = cam.worldView.y + halfH;
+        const bottom = cam.worldView.bottom - halfH;
+
+        player.x = Phaser.Math.Clamp(player.x, left, right);
+        player.y = Phaser.Math.Clamp(player.y, top, bottom);
+    }
+
+
     //Comprueba la dirección de los personajes y los estados de las huellas y humos
     update() {
 
@@ -315,6 +337,10 @@ export default class TutorialLoScene extends Phaser.Scene {
             this.controlsManagerLocal.controls2,
             'Scentpaw'
         );
+
+        this.clampToCamera(this.sighttail);
+        this.clampToCamera(this.scentpaw);
+
 
         //Si la habilidad de la vista está activa se muestran las huellas
         if (this.vistaDisp && this.controlsManagerLocal.controls1.keys.power.isDown) {
@@ -367,6 +393,7 @@ export default class TutorialLoScene extends Phaser.Scene {
         this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
         this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
         this.cameras.main.centerOn(this.centerjX, this.centerjY);
+
 
 
     }
