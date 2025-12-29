@@ -219,6 +219,7 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.setZoom(2);
 
+
         // Configurar colisiones en el mapa
         layer.setCollision([1, 7]);
 
@@ -228,11 +229,13 @@ export default class GameScene extends Phaser.Scene {
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
+        this.sighttail.setCollideWorldBounds(true);
 
         this.scentpaw = this.physics.add.sprite(3.3 * centerX, 8 * centerY, 'Scentpaw')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
+        this.scentpaw.setCollideWorldBounds(true);
 
         this.cazador = this.physics.add.sprite(3.2 * centerX, 4.5 * centerY, 'Cazador')
             .setScale(2)
@@ -424,6 +427,13 @@ export default class GameScene extends Phaser.Scene {
         const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
         const centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
         this.cameras.main.centerOn(centerjX, centerjY);
+        this.physics.world.setBounds(
+            cam.worldView.x,
+            cam.worldView.y,
+            cam.worldView.width,
+            cam.worldView.height
+        );
+
 
         this.launchDialogueScene(0);
 
@@ -815,6 +825,21 @@ createAnimations(playerkey) {
     });
 }
 
+clampToCamera(player) {
+    const cam = this.cameras.main;
+
+    const halfW = player.displayWidth * 0.5;
+    const halfH = player.displayHeight * 0.5;
+
+    const left   = cam.worldView.x + halfW;
+    const right  = cam.worldView.right - halfW;
+    const top    = cam.worldView.y + halfH;
+    const bottom = cam.worldView.bottom - halfH;
+
+    player.x = Phaser.Math.Clamp(player.x, left, right);
+    player.y = Phaser.Math.Clamp(player.y, top, bottom);
+}
+
 //Comprueba la dirección de los personajes y los estados de los gases y las flechas
 update() {
     const myRole = this.registry.get("rol");
@@ -848,6 +873,10 @@ update() {
             lastControl = controls.keys.right.isDown;
         }
     }
+
+    this.clampToCamera(this.sighttail);
+    this.clampToCamera(this.scentpaw);
+
     //Movimiento de las flechas
     this.flechas.forEach((flecha) => {
         if (flecha.x >= flecha.rangoX.maxX) {
