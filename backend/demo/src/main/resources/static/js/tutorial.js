@@ -44,6 +44,7 @@ export default class TutorialScene extends Phaser.Scene {
 
         const myRole = this.registry.get("rol");
         const roomId = this.registry.get("room");
+        this.playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
 
         // Crear y guardar socket en registry si no existe (evitar crear múltiples)
         if (!this.registry.get("socket")) {
@@ -225,19 +226,17 @@ export default class TutorialScene extends Phaser.Scene {
                 const parts = msg.split(":");
                 const room = parts[1];
                 const raton = parts[2];
-                const direction = parts[3];
+                const x = parts[3];
+                const y = parts[4]; //lo convertimos a número
 
                 if (room !== roomId) return;
+                if(raton === this.playerName) return;
 
-                const player = raton === "Sighttail" ? this.sighttail : this.scentpaw;
-                const speed = 2;
+                const otherPlayer = raton === "Sighttail" ? this.sighttail : this.scentpaw;
 
-                switch (direction) {
-                    case "up": player.y -= speed; player.play(`${raton}-walk-up`, true); break;
-                    case "down": player.y += speed; player.play(`${raton}-walk-down`, true); break;
-                    case "left": player.x -= speed; player.play(`${raton}-walk-left`, true); break;
-                    case "right": player.x += speed; player.play(`${raton}-walk-right`, true); break;
-                }
+                otherPlayer.x = parseFloat(x);
+                otherPlayer.y = parseFloat(y);
+                
             }else if(msg.startsWith("abilityOn:")){
                 const msgRoomId =msg.split(":")[1];
                 const tipo = msg.split(":")[2];
@@ -319,31 +318,36 @@ export default class TutorialScene extends Phaser.Scene {
 
         const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
         const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
-        const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
-        let lastControl =null;
-        this.controlsManager.handlePlayerMovement(player, controls, playerName);
-
+        //const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
+        
+        //this.controlsManager.handlePlayerMovement(player, controls, playerName);
+        const speed = 2;
+        let moved =false;
         if (controls.keys.up.isDown) {
-            if (lastControl!=controls.keys.up.isDown){
-                this.socket.send("move:"+roomId+":"+playerName+":up");
-                lastControl = controls.keys.up.isDown;
-            }
+            player.y -= speed;
+            player.play(`${this.playerName}-walk-up`, true);
+            moved = true;
+            
         } else if (controls.keys.down.isDown) {
-            if (lastControl!=controls.keys.down.isDown){
-                this.socket.send("move:"+roomId+":"+playerName+":down");
-                lastControl = controls.keys.down.isDown;
-            }
+            player.y += speed; 
+            player.play(`${this.playerName}-walk-down`, true);
+            moved = true;
+            //this.socket.send("move:"+roomId+":"+playerName+":"+player.x+":"+player.y);
+      
         } else if (controls.keys.left.isDown) {
-            if (lastControl!=controls.keys.left.isDown){
-                this.socket.send("move:"+roomId+":"+playerName+":left");
-                lastControl = controls.keys.left.isDown;
-            }
+            player.x -= speed;
+            player.play(`${this.playerName}-walk-left`, true);
+            moved = true;
+
         } else if (controls.keys.right.isDown) {
-            if (lastControl!=controls.keys.right.isDown){
-                this.socket.send("move:"+roomId+":"+playerName+":right");
-                lastControl = controls.keys.right.isDown;
-            }
+                player.x += speed;
+                player.play(`${this.playerName}-walk-right`, true);
+                moved = true;
         } 
+
+        if(moved){
+            this.socket.send("move:"+roomId+":"+this.playerName+":"+player.x+":"+player.y);
+        }
 
         this.clampToCamera(this.sighttail);
         this.clampToCamera(this.scentpaw);
