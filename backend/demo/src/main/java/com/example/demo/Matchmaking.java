@@ -115,36 +115,42 @@ public class Matchmaking extends TextWebSocketHandler {
                 }
             }
         }
-        if (payload.equals("leaveRoom")) {
+        if(payload.startsWith("PausarEscena")){
             Room room = findRoomForPlayer(session);
-            if (room != null) {
-                room.getPlayers().remove(session);
-                if (room.getPlayers().isEmpty()) {
-                    rooms.remove(room);
+            if(room !=null){
+                // Reenviar el mensaje a todos los jugadores emparejados con esta sala
+                for (WebSocketSession s : room.getPlayers()) {
+                    if (s.isOpen()) {
+                        s.sendMessage(new TextMessage(payload));
+                    }
                 }
             }
-            waitingPlayers.remove(session);
-            return;
+        }
+        if(payload.startsWith("Reanudar")){
+            Room room = findRoomForPlayer(session);
+            if(room !=null){
+                // Reenviar el mensaje a todos los jugadores emparejados con esta sala
+                for (WebSocketSession s : room.getPlayers()) {
+                    if (s.isOpen()) {
+                        s.sendMessage(new TextMessage(payload));
+                    }
+                }
+            }
         }
 
         if (payload.equals("leaveRoom")) {
             Room room = findRoomForPlayer(session);
-            if (room != null) {
-            room.getPlayers().remove(session);
-            // Notificamos al otro jugador que vuelva al menú
+            // Notificar a TODOS antes de eliminar
             for (WebSocketSession s : room.getPlayers()) {
                 if (s.isOpen()) {
-                    try {
-                        s.sendMessage(new TextMessage("forceReturnToIntro"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    s.sendMessage(new TextMessage("forceReturnToIntro"));
                 }
-                rooms.remove(room);
             }
+
+            // Limpiar sala
+            room.getPlayers().clear();
+            rooms.remove(room);
         }
-            return;
-}
     }
 
     @Override

@@ -43,15 +43,13 @@ class PauseScene extends Phaser.Scene {
         //Botón que te devuelve a la escena anterior 
         const reanudar = this.add.image(0.28 * centerX, 0.4 * centerY, "reanudar").setInteractive()
             .on('pointerdown', () => {
-                this.scene.stop("PauseScene");//Detiene la escena
-                this.returnToCallingScene();//Llama a un método para volver a la escena anterior
+                this.socket.send("Reanudar");
             });
-
-        //Botón que te envía a la escena de créditos
-        const credits = this.add.image(0.6 * centerX, 1.5 * centerY, "credits").setInteractive()
+        
+        //Botón que te saca de la partida
+        const salir= this.add.image(0.28 * centerX, 0.8 * centerY, "salir").setInteractive()
             .on('pointerdown', () => {
-                this.scene.pause("PauseScene");
-                this.scene.launch('CreditScene', { callingScene: this.scene.key });
+                this.socket.send("leaveRoom");
             });
 
         //Cargamos las imagenes de decoración
@@ -71,7 +69,8 @@ class PauseScene extends Phaser.Scene {
 
             if (msg.startsWith("forceReturnToIntro")) {// Detenemos todas las escenas relevantes y volvemos al menú
                 this.scene.stop("PauseScene");
-                this.scene.stop("GameLoScene"); // o la escena de juego activa
+                this.scene.resume(this.callingScene);
+                this.scene.stop(this.callingScene);
                 this.scene.start("IntroScene");
             }
 
@@ -79,8 +78,13 @@ class PauseScene extends Phaser.Scene {
                 console.log("Volviendo a INTRO");
                 // Detenemos todas las escenas relevantes y volvemos al menú
                 this.scene.stop("PauseScene");
-                this.scene.stop("GameLoScene"); // o la escena de juego activa
+                this.scene.resume(this.callingScene);
+                this.scene.stop(this.callingScene);
                 this.scene.start("IntroScene");
+            }
+            if (msg.startsWith("Reanudar")){
+                this.scene.stop("PauseScene");//Detiene la escena
+                this.returnToCallingScene();//Llama a un método para volver a la escena anterior
             }
         };
     }

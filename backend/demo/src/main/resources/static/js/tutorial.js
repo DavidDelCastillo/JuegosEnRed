@@ -184,10 +184,7 @@ export default class TutorialScene extends Phaser.Scene {
         const pausa = this.add.image(1.45 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () => {
-
-                
-                this.scene.pause();
-                this.scene.launch('PauseScene', { callingScene: this.scene.key });
+                this.socket.send("PausarEscena");
             });
 
         //boton para abrir el chat
@@ -307,6 +304,10 @@ export default class TutorialScene extends Phaser.Scene {
             } else if (msg.startsWith("forceReturnToIntro")) {
                 this.scene.stop("TutorialScene");
                 this.scene.start("IntroScene");
+                
+            } else if(msg.startsWith("PausarEscena")){
+                this.scene.pause();
+                this.scene.launch('PauseScene', { callingScene: this.scene.key });
             }
         });
 
