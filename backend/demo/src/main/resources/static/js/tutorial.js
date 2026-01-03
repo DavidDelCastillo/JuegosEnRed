@@ -59,6 +59,9 @@ export default class TutorialScene extends Phaser.Scene {
 
         this.socket = this.registry.get("socket");
 
+        //No hay interacción con el agujero
+        this.agujeroActivado = false;
+
         //Creamos unos arrays para meter las imagenes de las huellas y el humo
         this.huellas = [];
         this.humos = [];
@@ -132,18 +135,18 @@ export default class TutorialScene extends Phaser.Scene {
             this.socket.send("newDialoge:"+1+":"+roomId);
         });
 
+        this.physics.add.collider(this.scentpaw, this.puerta, () => {
+            this.socket.send("newDialoge:"+1+":"+roomId);
+        });
+
         //Si el personaje de Sighttail se choca con el agujero usando su habilidad se inicia la conversación
-        this.physics.add.overlap(this.sighttail, this.agujero, (player, agujero) => {
-            if (this.agujero.visible) {
-                this.checkAgujeroInteraction(myRole, roomId);
-            }
+        this.physics.add.overlap(this.sighttail, this.agujero, () => {
+            checkAgujeroInteraction(roomId);
         });
 
         //Lo mismo pero con el otro personaje
-        this.physics.add.overlap(this.scentpaw, this.agujero, (player, agujero) => {
-            if (this.agujero.visible) {
-                this.checkAgujeroInteraction(myRole,roomId);
-            }
+        this.physics.add.overlap(this.scentpaw, this.agujero, () => {
+            checkAgujeroInteraction(roomId);
         });
 
         //Ponemos las huellas invisibles
@@ -181,6 +184,8 @@ export default class TutorialScene extends Phaser.Scene {
         const pausa = this.add.image(1.45 * centerX, 0.6 * centerY, 'pause').setScrollFactor(0).setScale(0.15)
             .setInteractive()
             .on('pointerdown', () => {
+
+                
                 this.scene.pause();
                 this.scene.launch('PauseScene', { callingScene: this.scene.key });
             });
@@ -210,10 +215,14 @@ export default class TutorialScene extends Phaser.Scene {
                 const nextScene = msg.split(":")[1];
                 const msgRoomId = msg.split(":")[2];
 
-                if(msgRoomId==roomId){
-                    this.scene.stop("TutorialScene");
-                    this.scene.start(nextScene);
+                if(msgRoomId !==roomId) return;
+                if(this.scene.isActive("DialogueScene")){
+                    this.scene.stop("DialogueScene");
+                    this.scene.resume("TutorialScene");
                 }
+
+                this.scene.stop("TutorialScene");
+                this.scene.start(nextScene);
             }
             else if(msg.startsWith("newDialoge:")){
                 const int =msg.split(":")[1];
@@ -227,7 +236,9 @@ export default class TutorialScene extends Phaser.Scene {
                 const room = parts[1];
                 const raton = parts[2];
                 const x = parts[3];
-                const y = parts[4]; //lo convertimos a número
+                const y = parts[4];
+                const direction = parts[5];
+                const animState = parts [6];
 
                 if (room !== roomId) return;
                 if(raton === this.playerName) return;
@@ -236,6 +247,14 @@ export default class TutorialScene extends Phaser.Scene {
 
                 otherPlayer.x = parseFloat(x);
                 otherPlayer.y = parseFloat(y);
+
+                // Animación
+                 const animKey = animState === "walk" ? `${raton}-walk-${direction}` : `${raton}-idle${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+
+                if (!otherPlayer.anims.isPlaying || otherPlayer.anims.currentAnim.key !== animKey) 
+                {
+                    otherPlayer.play(animKey, true);
+                }
                 
             }else if(msg.startsWith("abilityOn:")){
                 const msgRoomId =msg.split(":")[1];
@@ -318,36 +337,44 @@ export default class TutorialScene extends Phaser.Scene {
 
         const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
         const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
-        //const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
         
-        //this.controlsManager.handlePlayerMovement(player, controls, playerName);
-        const speed = 2;
+
         let moved =false;
+        let direction = this.lastDirection || "down";
+
+        player.setVelocity(0);
+
         if (controls.keys.up.isDown) {
-            player.y -= speed;
-            player.play(`${this.playerName}-walk-up`, true);
+            player.setVelocityY(-100);
+            direction = "up";
             moved = true;
             
         } else if (controls.keys.down.isDown) {
-            player.y += speed; 
-            player.play(`${this.playerName}-walk-down`, true);
+           player.setVelocityY(100);
+            direction = "down";
             moved = true;
-            //this.socket.send("move:"+roomId+":"+playerName+":"+player.x+":"+player.y);
       
         } else if (controls.keys.left.isDown) {
-            player.x -= speed;
-            player.play(`${this.playerName}-walk-left`, true);
+            player.setVelocityX(-100);
+            direction = "left";
             moved = true;
 
         } else if (controls.keys.right.isDown) {
-                player.x += speed;
-                player.play(`${this.playerName}-walk-right`, true);
+                player.setVelocityX(100);
+                direction = "right";
                 moved = true;
         } 
+        
 
         if(moved){
-            this.socket.send("move:"+roomId+":"+this.playerName+":"+player.x+":"+player.y);
+            player.play(`${this.playerName}-walk-${direction}`, true);
+        } else {
+            player.play(`${this.playerName}-idle${direction.charAt(0).toUpperCase() + direction.slice(1)}`, true);
         }
+
+        this.socket.send("move:"+roomId+":"+this.playerName+":"+player.x+":"+player.y+":"+direction+":"+ (moved ? "walk" : "idle"));
+
+        this.lastDirection = direction;
 
         this.clampToCamera(this.sighttail);
         this.clampToCamera(this.scentpaw);
@@ -371,16 +398,17 @@ export default class TutorialScene extends Phaser.Scene {
 
     }
     
-    //Confirma la interacción con el agujero
-    checkAgujeroInteraction(myRole,roomId) {
-        this.input.keyboard.on('keydown-E', () => {
-            if (myRole == "raton1" && this.agujero.visible) {
-                this.socket.send("newDialoge:"+2+":"+roomId);
-                this.time.delayedCall(500, () => {
-                    this.socket.send("nextScene:GameScene:"+roomId);
-                })
+    
+    checkAgujeroInteraction(roomId) {
+        if (!this.agujero.visible) return;
+        if (this.agujeroActivado) return;
 
-            }
+        this.agujeroActivado = true;
+
+        this.socket.send("newDialoge:2:" + roomId);
+
+        this.time.delayedCall(500, () => {
+            this.socket.send("nextScene:GameScene:" + roomId);
         });
     }
 
