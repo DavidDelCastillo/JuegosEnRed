@@ -131,22 +131,13 @@ export default class TutorialScene extends Phaser.Scene {
         this.physics.add.collider(this.scentpaw, cementerio);
 
         //Si choca con la puerta se inicia el dialogo de esta
-        this.physics.add.collider(this.sighttail, this.puerta, () => {
-            this.socket.send("newDialoge:"+1+":"+roomId);
-        });
-
         this.physics.add.collider(this.scentpaw, this.puerta, () => {
             this.socket.send("newDialoge:"+1+":"+roomId);
         });
 
         //Si el personaje de Sighttail se choca con el agujero usando su habilidad se inicia la conversación
         this.physics.add.overlap(this.sighttail, this.agujero, () => {
-            checkAgujeroInteraction(roomId);
-        });
-
-        //Lo mismo pero con el otro personaje
-        this.physics.add.overlap(this.scentpaw, this.agujero, () => {
-            checkAgujeroInteraction(roomId);
+            this.checkAgujeroInteraction(roomId);
         });
 
         //Ponemos las huellas invisibles
@@ -213,10 +204,6 @@ export default class TutorialScene extends Phaser.Scene {
                 const msgRoomId = msg.split(":")[2];
 
                 if(msgRoomId !==roomId) return;
-                if(this.scene.isActive("DialogueScene")){
-                    this.scene.stop("DialogueScene");
-                    this.scene.resume("TutorialScene");
-                }
 
                 this.scene.stop("TutorialScene");
                 this.scene.start(nextScene);
@@ -304,7 +291,7 @@ export default class TutorialScene extends Phaser.Scene {
             } else if (msg.startsWith("forceReturnToIntro")) {
                 this.scene.stop("TutorialScene");
                 this.scene.start("IntroScene");
-                
+
             } else if(msg.startsWith("PausarEscena")){
                 this.scene.pause();
                 this.scene.launch('PauseScene', { callingScene: this.scene.key });
@@ -406,11 +393,10 @@ export default class TutorialScene extends Phaser.Scene {
 
         this.agujeroActivado = true;
 
-        this.socket.send("newDialoge:2:" + roomId);
-
-        this.time.delayedCall(500, () => {
-            this.socket.send("nextScene:GameScene:" + roomId);
-        });
+        //Desactiva la colisión
+        this.physics.world.removeCollider(this.agujero);
+        
+        this.socket.send("nextScene:GameScene:" + roomId);
     }
 
     //Gestión de dialogos
@@ -433,11 +419,6 @@ export default class TutorialScene extends Phaser.Scene {
                 this.capaV.setVisible(false);
                 this.vistaDisp = true;
                 this.olfatoDisp = true;
-                break;
-
-            case 2: // dialogo de agujero
-                startIndex = 9;
-                endIndex = 12;
                 break;
 
             default: // Caso por defecto

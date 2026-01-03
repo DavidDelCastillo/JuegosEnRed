@@ -61,6 +61,7 @@ export default class GameScene extends Phaser.Scene {
 
         const myRole = this.registry.get("rol");
         const roomId = this.registry.get("room");
+        this.playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
 
         // Crear y guardar socket en registry si no existe (evitar crear múltiples)
         if (!this.registry.get("socket")) {
@@ -349,8 +350,7 @@ export default class GameScene extends Phaser.Scene {
         const pausa = this.add.image(1.45 * centerX, 0.58 * centerY, 'pause').setScrollFactor(0).setScale(0.12)
             .setInteractive()
             .on('pointerdown', () => {
-                this.scene.pause(); // Pausa la escena actual
-                this.scene.launch('PauseScene', { callingScene: this.scene.key }); //Nos movemos a la escena de pausa
+                this.socket.send("PausarEscena");
             });
 
         //boton para abrir el chat
@@ -405,14 +405,7 @@ export default class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.sighttail, this.carta, () => {
             this.socket.send("newDialoge:"+5+":"+roomId);
             this.time.delayedCall(500, () => {
-                console.log("PREPARADO PARA CAMBIAR ESCENA");
                 this.socket.send("nextScene:EndScene:"+roomId);
-            });
-        })
-        this.physics.add.collider(this.scentpaw, this.carta, () => {
-            this.socket.send("newDialoge:"+5+":"+roomId);
-            this.time.delayedCall(500, () => {
-                this.socket.send("nextScene:EndScene:"+roomId);;
             });
         })
 
@@ -424,18 +417,18 @@ export default class GameScene extends Phaser.Scene {
         this.capaO = this.add.circle(0.5 * centerX, 0.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
 
         //Posición de los personajes en la cámara
-        const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
-        const centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
-        this.cameras.main.centerOn(centerjX, centerjY);
-        this.physics.world.setBounds(
+        this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
+        this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
+        this.cameras.main.centerOn(this.centerjX, this.centerjY);
+        /*this.physics.world.setBounds(
             cam.worldView.x,
             cam.worldView.y,
             cam.worldView.width,
             cam.worldView.height
-        );
+        );*/
 
 
-        this.launchDialogueScene(0);
+        //this.launchDialogueScene(0);
 
         // Escuchar mensajes WebSocket
         this.socket.addEventListener('message', (event) => {
@@ -445,10 +438,14 @@ export default class GameScene extends Phaser.Scene {
                 const nextScene = msg.split(":")[1];
                 const msgRoomId = msg.split(":")[2];
 
-                if(msgRoomId==roomId){
-                    this.scene.stop("GameScene");
-                    this.scene.start(nextScene);
+                if(msgRoomId !==roomId) return;
+                if(this.scene.isActive("DialogueScene")){
+                    this.scene.stop("DialogueScene");
+                    this.scene.resume("GameScene");
                 }
+
+                this.scene.stop("GameScene");
+                this.scene.start(nextScene);
             }
             else if(msg.startsWith("newDialoge:")){
                 const int =msg.split(":")[1];
@@ -461,18 +458,25 @@ export default class GameScene extends Phaser.Scene {
                 const parts = msg.split(":");
                 const room = parts[1];
                 const raton = parts[2];
-                const direction = parts[3];
+                const x = parts[3];
+                const y = parts[4];
+                const direction = parts[5];
+                const animState = parts [6];
 
                 if (room !== roomId) return;
+                if(raton === this.playerName) return;
 
-                const player = raton === "Sighttail" ? this.sighttail : this.scentpaw;
-                const speed = 2;
+                const otherPlayer = raton === "Sighttail" ? this.sighttail : this.scentpaw;
 
-                switch (direction) {
-                    case "up": player.y -= speed; player.play(`${raton}-walk-up`, true); break;
-                    case "down": player.y += speed; player.play(`${raton}-walk-down`, true); break;
-                    case "left": player.x -= speed; player.play(`${raton}-walk-left`, true); break;
-                    case "right": player.x += speed; player.play(`${raton}-walk-right`, true); break;
+                otherPlayer.x = parseFloat(x);
+                otherPlayer.y = parseFloat(y);
+
+                // Animación
+                 const animKey = animState === "walk" ? `${raton}-walk-${direction}` : `${raton}-idle${direction.charAt(0).toUpperCase() + direction.slice(1)}`;
+
+                if (!otherPlayer.anims.isPlaying || otherPlayer.anims.currentAnim.key !== animKey) 
+                {
+                    otherPlayer.play(animKey, true);
                 }
             }else if(msg.startsWith("abilityOn:")){
                 const msgRoomId =msg.split(":")[1];
@@ -553,6 +557,10 @@ export default class GameScene extends Phaser.Scene {
             } else if (msg.startsWith("forceReturnToIntro")) {
                 this.scene.stop("GameScene");
                 this.scene.start("IntroScene");
+
+            }else if(msg.startsWith("PausarEscena")){
+                this.scene.pause();
+                this.scene.launch('PauseScene', { callingScene: this.scene.key });
             }
         });
 
@@ -847,32 +855,43 @@ update() {
 
     const player = myRole === "raton1" ? this.sighttail : this.scentpaw;
     const controls = myRole === "raton1" ? this.controlsManager.controls1 : this.controlsManager.controls2;
-    const playerName = myRole === "raton1" ? "Sighttail" : "Scentpaw";
-    let lastControl =null;
 
-    this.controlsManager.handlePlayerMovement(player, controls, playerName);
+    let moved =false;
+    let direction = this.lastDirection || "down";
+
+    player.setVelocity(0);
 
     if (controls.keys.up.isDown) {
-        if (lastControl!=controls.keys.up.isDown){
-            this.socket.send("move:"+roomId+":"+playerName+":up");
-            lastControl = controls.keys.up.isDown;
-        }
+        player.setVelocityY(-100);
+        direction = "up";
+        moved = true;
+            
     } else if (controls.keys.down.isDown) {
-        if (lastControl!=controls.keys.down.isDown){
-            this.socket.send("move:"+roomId+":"+playerName+":down");
-            lastControl = controls.keys.down.isDown;
-        }
+        player.setVelocityY(100);
+        direction = "down";
+        moved = true;
+      
     } else if (controls.keys.left.isDown) {
-        if (lastControl!=controls.keys.left.isDown){
-            this.socket.send("move:"+roomId+":"+playerName+":left");
-            lastControl = controls.keys.left.isDown;
-        }
+        player.setVelocityX(-100);
+        direction = "left";
+        moved = true;
+
     } else if (controls.keys.right.isDown) {
-        if (lastControl!=controls.keys.right.isDown){
-            this.socket.send("move:"+roomId+":"+playerName+":right");
-            lastControl = controls.keys.right.isDown;
-        }
+            player.setVelocityX(100);
+            direction = "right";
+            moved = true;
+    } 
+        
+
+    if(moved){
+        player.play(`${this.playerName}-walk-${direction}`, true);
+    } else {
+        player.play(`${this.playerName}-idle${direction.charAt(0).toUpperCase() + direction.slice(1)}`, true);
     }
+
+    this.socket.send("move:"+roomId+":"+this.playerName+":"+player.x+":"+player.y+":"+direction+":"+ (moved ? "walk" : "idle"));
+
+    this.lastDirection = direction;
 
     this.clampToCamera(this.sighttail);
     this.clampToCamera(this.scentpaw);
@@ -908,9 +927,9 @@ update() {
     this.checkCazadorCollision(myRole, roomId);
     this.checkCazadorCollision(myRole, roomId);
     // Centrar cámara entre los dos jugadores
-    const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
-    const centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
-    this.cameras.main.centerOn(centerjX, centerjY);
+    this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
+    this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
+    this.cameras.main.centerOn(this.centerjX, this.centerjY);
 }
 
 
