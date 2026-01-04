@@ -219,6 +219,7 @@ export default class GameScene extends Phaser.Scene {
         const worldHeight = map.heightInPixels;
         this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.setZoom(2);
+        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
 
         // Configurar colisiones en el mapa
@@ -226,13 +227,13 @@ export default class GameScene extends Phaser.Scene {
 
 
         // Crear los sprites de los jugadores con físicas
-        this.sighttail = this.physics.add.sprite(3.5 * centerX, 8 * centerY, 'Sighttail')
+        this.sighttail = this.physics.add.sprite(1900, 2500, 'Sighttail')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
         this.sighttail.setCollideWorldBounds(true);
 
-        this.scentpaw = this.physics.add.sprite(3.3 * centerX, 8 * centerY, 'Scentpaw')
+        this.scentpaw = this.physics.add.sprite(1900,2500, 'Scentpaw')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
@@ -410,11 +411,11 @@ export default class GameScene extends Phaser.Scene {
         })
 
         //icono de los poderes
-        this.vision = this.add.image(0.5 * centerX, 0.4 * centerY, 'vision').setScrollFactor(0);
-        this.olfato = this.add.image(0.5 * centerX, 0.25 * centerY, 'olfato').setScrollFactor(0);
+        this.vision = this.add.image(0.7 * centerX, 0.6 * centerY, 'vision').setScrollFactor(0);
+        this.olfato = this.add.image(0.61 * centerX, 0.6 * centerY, 'olfato').setScrollFactor(0);
 
-        this.capaV = this.add.circle(0.5 * centerX, 0.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
-        this.capaO = this.add.circle(0.5 * centerX, 0.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaV = this.add.circle(0.7 * centerX, 0.6 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaO = this.add.circle(0.61 * centerX, 0.6 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
 
         //Posición de los personajes en la cámara
         this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
@@ -555,6 +556,9 @@ export default class GameScene extends Phaser.Scene {
                     }
                 }
             } else if (msg.startsWith("forceReturnToIntro")) {
+                if(this.scene.isActive("DialogueScene")) {
+                    this.scene.stop('DialogueScene');
+                }
                 this.scene.stop("GameScene");
                 this.scene.start("IntroScene");
 
@@ -881,7 +885,8 @@ update() {
             direction = "right";
             moved = true;
     } 
-        
+    
+    console.log(player.x+", "*player.y)
 
     if(moved){
         player.play(`${this.playerName}-walk-${direction}`, true);

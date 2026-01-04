@@ -7,11 +7,6 @@ class LoseScene extends Phaser.Scene{
         //Cargamos las imagenes que componen el fondo
         this.load.image("fondoD", 'assets/Pantallla_Derrota.png');
         this.load.image("botonS", 'assets/VolverMenu.png');
-        this.load.image("Boton_pipe", 'assets/Boton_pipe.png');
-
-        //Cargamos el audio
-
-        this.load.audio("metalpipe", 'assets/metalpipe.mp3');
     }
 
     create(){
@@ -42,12 +37,6 @@ class LoseScene extends Phaser.Scene{
             align: 'center',
             wordWrap: {width: 600}
         });
-
-        //Botón del metal pipe
-        const pipe = this.add.image(1 * centerX, 1.8 * centerY, "Boton_pipe").setInteractive().setScale(0.3)
-            .on('pointerdown', () => {
-                this.sound.play("metalpipe");
-            });
 
         //Botón para volver al menú inicial
         const volver = this.add.image(1 * centerX, 1.4 * centerY, "botonS").setInteractive()

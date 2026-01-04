@@ -289,6 +289,9 @@ export default class TutorialScene extends Phaser.Scene {
                     
                 }
             } else if (msg.startsWith("forceReturnToIntro")) {
+                if(this.scene.isActive("DialogueScene")) {
+                    this.scene.stop('DialogueScene');
+                }
                 this.scene.stop("TutorialScene");
                 this.scene.start("IntroScene");
 
