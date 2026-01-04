@@ -53,19 +53,14 @@ public class ChatController {
         }
     }
 
-    /*@Autowired
-    private UserRepository userRepository;
-
     @PostMapping("/connect")
-    public ResponseEntity<?> connectClient(@RequestParam int userId) {
-        if (userRepository.existsById(userId)) {
-            activeUsers.put(userId, System.currentTimeMillis());
-            return ResponseEntity.ok(userId);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(Map.of("success", false, "message", "Usuario no encontrado"));
-        }
-    }*/
+public int connectClient() {
+    int userId = userIdCounter.incrementAndGet();
+    activeUsers.put(userId, System.currentTimeMillis());
+    System.out.println("Usuario conectado: " + userId);
+    return userId;
+}
+
 
     @PostMapping("/disconnect")
     public int disconnectClient(@RequestParam int userId) {
