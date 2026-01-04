@@ -5,8 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,16 +78,28 @@ public int connectClient() {
         }
     }
     
-    @Scheduled(fixedRate = 2000) // Cada 2 segundos
-    public void removeInactiveUsers() {
-        long currentTime = System.currentTimeMillis();
-        activeUsers.forEach((userId, lastActive) -> {
-            if (currentTime - lastActive > 10000) { // Más de 10 segundos inactivo
-                activeUsers.remove(userId);
-                System.out.println("Usuario " + userId + " desconectado por inactividad");
-            }
-        });
+
+    @SpringBootApplication
+    @EnableScheduling
+    public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+        }
     }
+
+
+    @Scheduled(fixedRate = 2000)
+public void removeInactiveUsers() {
+    long now = System.currentTimeMillis();
+
+    activeUsers.forEach((userId, lastActive) -> {
+        if (now - lastActive > 6000) { // 6 segundos sin heartbeat
+            activeUsers.remove(userId);
+            System.out.println("Usuario " + userId + " eliminado por timeout");
+        }
+    });
+}
+
 
     public static class ChatResponse {
         private final List<String> messages;

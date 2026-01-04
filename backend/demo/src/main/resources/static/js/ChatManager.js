@@ -9,8 +9,8 @@ export default class ChatManager {
         this.lastMessageId = 0;
         this.userId = localStorage.getItem('chatUserId') || null;
 
-        this.heartbeatInterval = null; // 🔧 CAMBIO
-        
+        this.heartbeatInterval = null; 
+
         // Listeners
         this.chatSend.on('click', () => this.sendMessage());
         this.chatInput.on('keypress', (e) => {
@@ -64,33 +64,36 @@ export default class ChatManager {
 
                 console.log(`Usuario conectado con ID: ${userId}`);
 
-                this.fetchConnectedUsers(); // 🔧 CAMBIO
+                this.fetchConnectedUsers(); 
                 this.startHeartbeat();
             })
             .fail(err => console.error('Error al conectar usuario:', err));
     }
 
-    disconnectUser() {
+    /*disconnectUser() {
         if (!this.userId) return;
 
-        navigator.sendBeacon( // 🔧 CAMBIO (más fiable que $.post en unload)
+        navigator.sendBeacon( 
             "/api/chat/disconnect",
             JSON.stringify({ userId: this.userId })
         );
-    }
+    }*/
 
     startHeartbeat() {
-        if (this.heartbeatInterval) return; // 🔧 CAMBIO
+    if (this.heartbeatInterval) return;
 
-        this.heartbeatInterval = setInterval(() => {
-            this.sendHeartbeat();
-        }, 3000);
-    }
+    this.heartbeatInterval = setInterval(() => {
+        if (this.userId) {
+            $.post("/api/chat/heartbeat", { userId: this.userId });
+        }
+    }, 3000);
+}
+
 
     sendHeartbeat() {
         if (!this.userId) return;
 
-        $.post("/api/chat/heartbeat", { userId: this.userId }) // 🔧 CAMBIO (chat, no char)
+        $.post("/api/chat/heartbeat", { userId: this.userId }) 
             .fail(err => console.error('Error en heartbeat:', err));
     }
 
@@ -106,7 +109,7 @@ export default class ChatManager {
 $(document).ready(() => {
     const chatManager = new ChatManager();
 
-    $(window).on('beforeunload', () => {
+    /*$(window).on('beforeunload', () => {
         chatManager.disconnectUser();
-    });
+    });*/
 });
