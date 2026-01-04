@@ -212,15 +212,11 @@ export default class GameLoScene extends Phaser.Scene {
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
-        this.sighttail.setCollideWorldBounds(true);
-
 
         this.scentpaw = this.physics.add.sprite(3.3 * centerX, 8 * centerY, 'Scentpaw')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
-        this.scentpaw.setCollideWorldBounds(true);
-
 
         this.cazador = this.physics.add.sprite(3.2 * centerX, 4.5 * centerY, 'Cazador')
             .setScale(2)
