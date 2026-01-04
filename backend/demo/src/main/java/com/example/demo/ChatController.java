@@ -26,20 +26,21 @@ public class ChatController {
 
 
     @GetMapping
-    public ChatResponse getMessages(@RequestParam(defaultValue = "0") int since) {
-        List<String> newMessages = new ArrayList<>();
-        int latestId = since;
+public ChatResponse getMessages(@RequestParam(defaultValue = "0") int since) {
+    List<ChatMessage> newMessages = new ArrayList<>();
+    int latestId = since;
 
-        synchronized (messages) {
-            for (ChatMessage msg : messages) {
-                if (msg.getId() > since) {
-                    newMessages.add(msg.getText());
-                    latestId = msg.getId();
-                }
+    synchronized (messages) {
+        for (ChatMessage msg : messages) {
+            if (msg.id() > since) {
+                newMessages.add(msg);
+                latestId = msg.id();
             }
         }
-        return new ChatResponse(newMessages, latestId);
     }
+    return new ChatResponse(newMessages, latestId);
+}
+
 
     @GetMapping("/activeClients")
     public int getActiveClients() {
@@ -49,7 +50,8 @@ public class ChatController {
     @PostMapping
     public void postMessage(@RequestParam String message, @RequestParam int userId) {
         synchronized (messages) {
-            messages.add(new ChatMessage(lastId.incrementAndGet(), userId + ": " + message));
+            messages.add(new ChatMessage(lastId.incrementAndGet(),userId,message));
+
             if (messages.size() > 50) {
                 messages.remove(0); // Almacenar los últimos 50 mensajes
             }
@@ -102,20 +104,21 @@ public void removeInactiveUsers() {
 
 
     public static class ChatResponse {
-        private final List<String> messages;
-        private final int timestamp;
+    private final List<ChatMessage> messages;
+    private final int timestamp;
 
-        public ChatResponse(List<String> messages, int timestamp) {
-            this.messages = messages;
-            this.timestamp = timestamp;
-        }
-
-        public List<String> getMessages() {
-            return messages;
-        }
-
-        public int getTimestamp() {
-            return timestamp;
-        }
+    public ChatResponse(List<ChatMessage> messages, int timestamp) {
+        this.messages = messages;
+        this.timestamp = timestamp;
     }
+
+    public List<ChatMessage> getMessages() {
+        return messages;
+    }
+
+    public int getTimestamp() {
+        return timestamp;
+    }
+}
+
 }

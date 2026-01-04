@@ -38,9 +38,7 @@ export default class ChatManager {
         $.get("/api/chat", { since: this.lastMessageId })
             .done((data) => {
                 if (data.messages?.length) {
-                    data.messages.forEach(msg => {
-                        this.chatMessages.append(`<div>${msg.id}: ${msg.text}</div>`);
-                    });
+                    data.messages.forEach(msg => {this.chatMessages.append(`<div><strong>${msg.userId}</strong>: ${msg.text}</div>`);});
                     this.chatMessages.scrollTop(this.chatMessages.prop('scrollHeight'));
                     this.lastMessageId = data.timestamp;
                 }
