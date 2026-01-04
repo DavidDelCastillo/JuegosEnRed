@@ -330,7 +330,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Crear el texto del temporizador
         this.timerText = this.add.text(0.96 * centerX, 0.52 * centerY, '00:00', {
-            font: '35px mousy',
+            font: '35px PlayfairDisplayItalic',
             color: '#FFFFFF',
         }).setScrollFactor(0);
 
