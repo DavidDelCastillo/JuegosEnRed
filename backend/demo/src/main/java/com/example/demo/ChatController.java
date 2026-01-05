@@ -5,8 +5,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +22,6 @@ public class ChatController {
     private final List<ChatMessage> messages = new ArrayList<>();
     private final AtomicInteger lastId = new AtomicInteger(0);
     private final AtomicInteger userIdCounter = new AtomicInteger(0);
-    private final ConcurrentHashMap<Integer, String> userNames = new ConcurrentHashMap<>();//mapa para asociar nombres con id
     private final ConcurrentHashMap<Integer, Long> activeUsers = new ConcurrentHashMap<>(); //otro mapa igual para los UserName
 
 
@@ -46,9 +48,8 @@ public class ChatController {
 
     @PostMapping
     public void postMessage(@RequestParam String message, @RequestParam int userId) {
-        String name=userNames.getOrDefault(userId, String.valueOf(userId));
         synchronized (messages) {
-            messages.add(new ChatMessage(lastId.incrementAndGet(), name + ": " + message));
+            messages.add(new ChatMessage(lastId.incrementAndGet(), userId + ": " + message));
             if (messages.size() > 50) {
                 messages.remove(0); // Almacenar los últimos 50 mensajes
             }
@@ -56,27 +57,17 @@ public class ChatController {
     }
 
     @PostMapping("/connect")
-    public ResponseEntity<?> connectClient(@RequestParam String id) {
-        int userId = userIdCounter.incrementAndGet();
-        activeUsers.put(userId,System.currentTimeMillis());
-        //Asociamos la id con el nombre
-        userNames.put(userId,id);
+public int connectClient() {
+    int userId = userIdCounter.incrementAndGet();
+    activeUsers.put(userId, System.currentTimeMillis());
+    System.out.println("Usuario conectado: " + userId);
+    return userId;
+}
 
-        //Mensaje conexión
-        synchronized (messages){
-            messages.add(new ChatMessage(lastId.incrementAndGet(), id+ " se ha conectado."));
-        }
-        return ResponseEntity.ok(userId);
-    }
 
     @PostMapping("/disconnect")
-    public int disconnectClient(@RequestParam int userId, @RequestParam String id) {
+    public int disconnectClient(@RequestParam int userId) {
         activeUsers.remove(userId);
-        userNames.remove(userId); //Lo borra
-        //Mensaje desconexión
-        synchronized (messages){
-            messages.add(new ChatMessage(lastId.incrementAndGet(), id+ " se ha desconectado."));
-        }
         return activeUsers.size();
     }
 
@@ -87,16 +78,28 @@ public class ChatController {
         }
     }
     
-    @Scheduled(fixedRate = 15000) // Cada 2 segundos
-    public void removeInactiveUsers() {
-        long currentTime = System.currentTimeMillis();
-        activeUsers.forEach((userId, lastActive) -> {
-            if (currentTime - lastActive > 10000) { // Más de 10 segundos inactivo
-                activeUsers.remove(userId);
-                System.out.println("Usuario " + userId + " desconectado por inactividad");
-            }
-        });
+
+    @SpringBootApplication
+    @EnableScheduling
+    public class DemoApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+        }
     }
+
+
+    @Scheduled(fixedRate = 2000)
+public void removeInactiveUsers() {
+    long now = System.currentTimeMillis();
+
+    activeUsers.forEach((userId, lastActive) -> {
+        if (now - lastActive > 6000) { // 6 segundos sin heartbeat
+            activeUsers.remove(userId);
+            System.out.println("Usuario " + userId + " eliminado por timeout");
+        }
+    });
+}
+
 
     public static class ChatResponse {
         private final List<String> messages;
