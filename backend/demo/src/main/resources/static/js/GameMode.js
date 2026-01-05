@@ -56,7 +56,7 @@ class GameModeScene extends Phaser.Scene{
                     { type: 'application/json' }
                 );
 
-                navigator.sendBeacon('http://localhost:8080/usuario/cerrarSesion', data);
+                navigator.sendBeacon('http://'+window.location.host+'/usuario/cerrarSesion', data);
 
                 localStorage.removeItem('chatUsername');
                 localStorage.removeItem('chatId');

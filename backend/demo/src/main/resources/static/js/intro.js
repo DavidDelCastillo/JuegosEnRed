@@ -26,7 +26,6 @@ class IntroScene extends Phaser.Scene {
 
         // WebSocket para iniciar partidas
         this.socket = new WebSocket("ws://"+window.location.host+"/ws/matchmaking");
-
         // Música de fondo
         if (!this.sound.get('musicaFondo')) {
             this.music = this.sound.add("musicaFondo", { loop: true, volume: 0.5 });
@@ -114,7 +113,7 @@ class IntroScene extends Phaser.Scene {
 
             const username = localStorage.getItem('chatUsername');
             if (username) {
-                fetch('http://localhost:8080/usuario/cerrarSesion', {
+                fetch('http://'+window.location.host+'/usuario/cerrarSesion', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ id: username })

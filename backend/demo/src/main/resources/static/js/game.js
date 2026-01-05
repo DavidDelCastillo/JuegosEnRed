@@ -86,6 +86,9 @@ export default class GameScene extends Phaser.Scene {
         if (!this.sound.get('laberinto')) {
             this.music = this.sound.add("laberinto", { loop: true, volume: 0.5 });
             this.music.play();
+            this.events.once('shutdown', () => {
+                this.music.stop();
+            });
         } else {
             this.music = this.sound.get('laberinto');
         }
@@ -219,7 +222,6 @@ export default class GameScene extends Phaser.Scene {
         const worldHeight = map.heightInPixels;
         this.cameras.main.setBounds(0, 0, worldWidth, worldHeight);
         this.cameras.main.setZoom(2);
-        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
 
 
         // Configurar colisiones en el mapa
@@ -227,12 +229,12 @@ export default class GameScene extends Phaser.Scene {
 
 
         // Crear los sprites de los jugadores con físicas
-        this.sighttail = this.physics.add.sprite(1900, 2500, 'Sighttail')
+        this.sighttail = this.physics.add.sprite(3.5 * centerX, 8 * centerY,'Sighttail')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
 
-        this.scentpaw = this.physics.add.sprite(1900,2500, 'Scentpaw')
+        this.scentpaw = this.physics.add.sprite(3.3 * centerX, 8 * centerY, 'Scentpaw')
             .setScale(2)
             .setSize(40, 35)
             .setOffset(12, 25);
@@ -409,25 +411,19 @@ export default class GameScene extends Phaser.Scene {
         })
 
         //icono de los poderes
-        this.vision = this.add.image(0.7 * centerX, 0.6 * centerY, 'vision').setScrollFactor(0);
-        this.olfato = this.add.image(0.61 * centerX, 0.6 * centerY, 'olfato').setScrollFactor(0);
+        this.vision = this.add.image(0.56 * centerX, 1.4 * centerY, 'vision').setScrollFactor(0);
+        this.olfato = this.add.image(0.56 * centerX, 1.25 * centerY, 'olfato').setScrollFactor(0);
 
-        this.capaV = this.add.circle(0.7 * centerX, 0.6 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
-        this.capaO = this.add.circle(0.61 * centerX, 0.6 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaV = this.add.circle(0.56 * centerX, 1.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaO = this.add.circle(0.56 * centerX, 1.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
 
         //Posición de los personajes en la cámara
         this.centerjX = (this.sighttail.x + this.scentpaw.x) / 2;
         this.centerjY = (this.sighttail.y + this.scentpaw.y) / 2;
         this.cameras.main.centerOn(this.centerjX, this.centerjY);
-        /*this.physics.world.setBounds(
-            cam.worldView.x,
-            cam.worldView.y,
-            cam.worldView.width,
-            cam.worldView.height
-        );*/
 
 
-        //this.launchDialogueScene(0);
+        this.launchDialogueScene(0);
 
         // Escuchar mensajes WebSocket
         this.socket.addEventListener('message', (event) => {
@@ -436,7 +432,7 @@ export default class GameScene extends Phaser.Scene {
             if (msg.startsWith("nextScene:")) {
                 const nextScene = msg.split(":")[1];
                 const msgRoomId = msg.split(":")[2];
-
+                
                 if(msgRoomId !==roomId) return;
                 if(this.scene.isActive("DialogueScene")){
                     this.scene.stop("DialogueScene");
@@ -612,12 +608,12 @@ updateTimer() {
 //Comprueba si alguno de los jugadores ha chocado co él para iniciar su dialogo
 checkCazadorCollision(myRole, roomId) {
 
-    if (myRole == "raton1") {
-        if (this.hablarCazador) {
+    if (this.hablarCazador) {
+        if (myRole == "raton1") {
             this.socket.send("newDialoge:"+3+":"+roomId);
             this.hablarCazador = false; // Desactiva para no repetir el diálogo
-            this.carta.setVisible(true);
         }
+        this.carta.setVisible(true);
     }
 }
 

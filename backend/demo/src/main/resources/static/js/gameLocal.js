@@ -68,6 +68,9 @@ export default class GameLoScene extends Phaser.Scene {
         if (!this.sound.get('laberinto')) {
             this.music = this.sound.add("laberinto", { loop: true, volume: 0.5 });
             this.music.play();
+            this.events.once('shutdown', () => {
+                this.music.stop();
+            });
         } else {
             this.music = this.sound.get('laberinto');
         }
@@ -392,11 +395,11 @@ export default class GameLoScene extends Phaser.Scene {
         })
 
         //icono de los poderes
-        this.vision = this.add.image(0.5 * centerX, 0.4 * centerY, 'vision').setScrollFactor(0);
-        this.olfato = this.add.image(0.5 * centerX, 0.25 * centerY, 'olfato').setScrollFactor(0);
+        this.vision = this.add.image(0.56 * centerX, 1.4 * centerY, 'vision').setScrollFactor(0);
+        this.olfato = this.add.image(0.56 * centerX, 1.25 * centerY, 'olfato').setScrollFactor(0);
 
-        this.capaV = this.add.circle(0.5 * centerX, 0.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
-        this.capaO = this.add.circle(0.5 * centerX, 0.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaV = this.add.circle(0.56 * centerX, 1.4 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
+        this.capaO = this.add.circle(0.56 * centerX, 1.25 * centerY, 32, 0x000000, 0.5).setScrollFactor(0).setVisible(false);
 
         //Posición de los personajes en la cámara
         const centerjX = (this.sighttail.x + this.scentpaw.x) / 2;

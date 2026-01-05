@@ -107,7 +107,7 @@ class LoginScene extends Phaser.Scene {
                     { type: 'application/json' }
                 );
 
-                navigator.sendBeacon('http://localhost:8080/usuario/cerrarSesion', data);
+                navigator.sendBeacon('http://'+window.location.host+'usuario/cerrarSesion', data);
 
                 localStorage.removeItem('chatUsername');
                 localStorage.removeItem('chatId');
@@ -141,7 +141,7 @@ class LoginScene extends Phaser.Scene {
             return;
         }
 
-        fetch("http://localhost:8080/usuario/login", {
+        fetch("http://"+window.location.host+"/usuario/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: user, password: password })
@@ -151,7 +151,7 @@ class LoginScene extends Phaser.Scene {
                 if (data.success) {
                     localStorage.setItem('chatId', user);
                     localStorage.setItem('chatUsername', user);
-                    fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(user), {
+                    fetch("http://"+window.location.host+"/api/chat/connect?id=" + encodeURIComponent(user), {
                         method: "POST"
                     })
                         .then(res => res.json())
@@ -178,7 +178,7 @@ class LoginScene extends Phaser.Scene {
             return;
         }
 
-        fetch("http://localhost:8080/usuario/registro", {
+        fetch("http://"+window.location.host+"/usuario/registro", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: nombre, password: contra })
@@ -188,7 +188,7 @@ class LoginScene extends Phaser.Scene {
                 if (response.ok && data.success) {
                     localStorage.setItem('chatId', nombre);
                     localStorage.setItem('chatUsername', nombre);
-                    fetch("http://localhost:8080/api/chat/connect?id=" + encodeURIComponent(nombre), {
+                    fetch("http://"+window.location.host+"/api/chat/connect?id=" + encodeURIComponent(nombre), {
                         method: "POST"
                     })
                         .then(res => res.json())
@@ -215,7 +215,7 @@ class LoginScene extends Phaser.Scene {
             return;
         }
 
-        fetch("http://localhost:8080/usuario/eliminar", {
+        fetch("http://"+window.location.host+"/usuario/eliminar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: nombre, password: contra })
