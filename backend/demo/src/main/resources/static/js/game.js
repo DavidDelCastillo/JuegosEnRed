@@ -65,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
 
         // Crear y guardar socket en registry si no existe (evitar crear múltiples)
         if (!this.registry.get("socket")) {
-            const socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+            const socket = new WebSocket("ws://"+window.location.host+"/ws/matchmaking");
             this.registry.set("socket", socket);
 
             // Cuando se abra la conexión, unirse a la cola de matchmaking

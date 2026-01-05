@@ -25,7 +25,7 @@ class IntroScene extends Phaser.Scene {
         const centerY = this.scale.height / 2;
 
         // WebSocket para iniciar partidas
-        this.socket = new WebSocket("ws://localhost:8080/ws/matchmaking");
+        this.socket = new WebSocket("ws://"+window.location.host+"/ws/matchmaking");
 
         // Música de fondo
         if (!this.sound.get('musicaFondo')) {
