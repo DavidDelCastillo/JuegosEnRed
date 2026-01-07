@@ -1,10 +1,6 @@
+aa,aa,0
 ab,aa,0
 opo,99,0
 kitsune,hola,0
-david,123,0
-david2,123,0
-paco,333,0
-papa,999,0
-uu,uu,0
-aa,aa,0
-d,1,1
+pepevilluela,holalola123,0
+holalola,lolaperola,0
