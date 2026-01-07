@@ -67,11 +67,11 @@ public int connectClient() {
 }
 
 
-    @PostMapping("/disconnect")
+    /*@PostMapping("/disconnect")
     public int disconnectClient(@RequestParam int userId) {
         activeUsers.remove(userId);
         return activeUsers.size();
-    }
+    }*/
 
     @PostMapping("/heartbeat")
     public void heartbeat(@RequestParam int userId) {
