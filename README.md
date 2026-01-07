@@ -297,7 +297,7 @@ El juego tambien posee sonidos cuando los personajes reciben daño y mueren, ade
 
 2. Durante la segunda fase se ha encargado de diseñar y crear los sprite sheet de los personajes, además de los poderes (las huellas y el humo que se ve) y el periodico. Además de esto ha programado código de gestión de pausa y del fondo.
   
-3. Durante la tercera fase ha creado assets nuevos, implementado las insignias desarrolladas para esta fase, creado los diagramas del flujo uy UML, así como las modificaciones de la memoria y parte de la programación.
+3. Durante la tercera fase ha creado assets nuevos, creado los diagramas del flujo uy UML, así como las modificaciones de la memoria y principal programación de la gestión de los usuarios.
 
 4. Durante la fase 4 se ha encargado de modificar el aspecto visual y la creación de los diagramas de flujo del UML.
 
@@ -309,7 +309,7 @@ El juego tambien posee sonidos cuando los personajes reciben daño y mueren, ade
    
 3. Durante la tercera fase se ha encargado de implementar la gestión correcta de las vidas, incluir la pantalla de derrota y crear el camino alternativo del nivel, así como la programación del chat y  del login.
 
-4. En la fase 4 ha sido el principal encargado de la implementación de Websocket.
+4. En la fase 4 ha sido el principal encargado de la implementación de Websocket y la correción de errores de sincronización.
 
 ### Daniel Duque Rodríguez
 
@@ -319,7 +319,7 @@ El juego tambien posee sonidos cuando los personajes reciben daño y mueren, ade
    
 3.  Durante la tercera fase se ha encargado de la búsqueda de sonidos y música y la programación del login y chat.
 
-4.  Durante la fase 4 se ha encargado de ciertas partes de la programación y la memoria.
+4.  Durante la fase 4 se ha encargado de ciertas partes de la programación y la memoria, además de cambiar la fuente del cronometro y crear la limitación de la cámara respecto a los jugadores.
 
 
 # FUNCIONES EN RED
@@ -335,6 +335,7 @@ Mediante WebSocket se controlan en tiempo real los siguientes aspectos del juego
 - Cuando un jugador activa una habilidad, al otro jugador también le aparece el uso de la habilidad de su compañero.
 - Se mantiene actualizada la cantidad de vidas de cada jugador.
 - Controla cuándo un jugador entra o sale de la partida.
+- Si un jugador pausa el juego, al otro también se le pausará.
 
 ## Diagrama de clases
 
