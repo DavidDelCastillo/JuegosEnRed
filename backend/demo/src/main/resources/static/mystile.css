@@ -11,15 +11,14 @@
 }
 
 body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
     font-family: 'mousy', sans-serif;
-    background-color: #42240e;
-    font-size: 40px;
+    background-color: black;
     color: black;
-}
-
-h1{
-    text-align: center;
-
 }
 
 .rectangulo {
